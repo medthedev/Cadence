@@ -109,6 +109,89 @@
   --habit-rose: #f23f7d;
 }
 
+/* Mono Glass — pure black & white with translucent glass surfaces */
+:root[data-theme='mono-glass'] {
+  color-scheme: dark;
+
+  --bg: #000000;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-subtle: rgba(255, 255, 255, 0.04);
+  --surface-hover: rgba(255, 255, 255, 0.11);
+  --border: rgba(255, 255, 255, 0.16);
+  --border-strong: rgba(255, 255, 255, 0.32);
+  --text: #ffffff;
+  --text-muted: #b3b3b3;
+  --accent: #ffffff;
+  --accent-hover: #d9d9d9;
+  --accent-soft: rgba(255, 255, 255, 0.14);
+  --danger: #f2f2f2;
+  --danger-soft: rgba(255, 255, 255, 0.14);
+  --shadow: 0 14px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  --radius: 16px;
+
+  --heat-0: rgba(255, 255, 255, 0.08);
+  --heat-1: rgba(255, 255, 255, 0.28);
+  --heat-2: rgba(255, 255, 255, 0.48);
+  --heat-3: rgba(255, 255, 255, 0.72);
+  --heat-4: #ffffff;
+
+  --habit-emerald: #ffffff;
+  --habit-sky: #d9d9d9;
+  --habit-violet: #bfbfbf;
+  --habit-amber: #a6a6a6;
+  --habit-rose: #8c8c8c;
+}
+
+:root[data-theme='mono-glass'] body {
+  background-image:
+    radial-gradient(circle at 12% -10%, rgba(255, 255, 255, 0.13), transparent 42%),
+    radial-gradient(circle at 92% 4%, rgba(255, 255, 255, 0.08), transparent 38%);
+  background-attachment: fixed;
+}
+
+:root[data-theme='mono-glass'] .sidebar,
+:root[data-theme='mono-glass'] .panel,
+:root[data-theme='mono-glass'] .composer,
+:root[data-theme='mono-glass'] .progress-card,
+:root[data-theme='mono-glass'] .card,
+:root[data-theme='mono-glass'] .habit-rail,
+:root[data-theme='mono-glass'] .stat-card,
+:root[data-theme='mono-glass'] .modal,
+:root[data-theme='mono-glass'] .theme-picker__menu {
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+
+:root[data-theme='mono-glass'] .modal-backdrop {
+  background: rgba(0, 0, 0, 0.74);
+  backdrop-filter: blur(6px);
+}
+
+/* White buttons need dark labels in this theme. */
+:root[data-theme='mono-glass'] .button--primary,
+:root[data-theme='mono-glass'] .brand__mark {
+  color: #000000;
+}
+
+:root[data-theme='mono-glass'] .brand__mark {
+  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.2);
+}
+
+:root[data-theme='mono-glass'] .todo-item--done .todo-checkbox,
+:root[data-theme='mono-glass'] .habit-check--done {
+  color: #000000;
+}
+
+:root[data-theme='mono-glass'] .stat-card--warm .stat-card__icon {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+:root[data-theme='mono-glass'] .search-field:focus-within,
+:root[data-theme='mono-glass'] .field__input:focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+}
+
 *,
 *::before,
 *::after {

@@ -31,6 +31,12 @@ const THEME_OPTIONS: Array<{
     description: 'Dark with a violet glow',
     swatches: ['#1e1f22', '#313338', '#7c5cff'],
   },
+  {
+    id: 'mono-glass',
+    label: 'Mono Glass',
+    description: 'Black, white and translucent',
+    swatches: ['#000000', '#ffffff', '#8a8a8a'],
+  },
 ]
 
 export function ThemePicker({ theme, onChange }: ThemePickerProps) {

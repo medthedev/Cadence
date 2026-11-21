@@ -411,3 +411,14 @@
     flex: 1;
   }
 }
+
+:root[data-theme='mono-glass'] .priority-chip--selected {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+:root[data-theme='mono-glass'] .priority-badge {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}

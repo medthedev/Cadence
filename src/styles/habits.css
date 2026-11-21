@@ -636,3 +636,17 @@
     max-height: 48vh;
   }
 }
+
+:root[data-theme='mono-glass'] .habit-avatar--overview,
+:root[data-theme='mono-glass'] .habit-avatar--emerald,
+:root[data-theme='mono-glass'] .habit-avatar--sky,
+:root[data-theme='mono-glass'] .habit-avatar--violet,
+:root[data-theme='mono-glass'] .habit-avatar--amber,
+:root[data-theme='mono-glass'] .habit-avatar--rose {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+:root[data-theme='mono-glass'] .habit-rail__subtitle svg {
+  color: #ffffff;
+}
