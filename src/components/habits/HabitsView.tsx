@@ -31,7 +31,14 @@ export function HabitsView() {
     } else {
       dispatch({
         type: 'habit/add',
-        habit: { id: createId(), createdAt: today, completedDates: [], ...changes },
+        habit: {
+          id: createId(),
+          createdAt: today,
+          completedDates: [],
+          ...changes,
+          waterLog: changes.kind === 'water' ? {} : undefined,
+          prayerLog: changes.kind === 'prayer' ? {} : undefined,
+        },
       })
     }
     setDialog(null)
@@ -49,6 +56,10 @@ export function HabitsView() {
         weeklyGoal: template.weeklyGoal,
         createdAt: today,
         completedDates: [],
+        kind: template.kind,
+        waterTarget: template.kind === 'water' ? (template.waterTarget ?? 2) : undefined,
+        waterLog: template.kind === 'water' ? {} : undefined,
+        prayerLog: template.kind === 'prayer' ? {} : undefined,
         source: template.category,
       },
     })
@@ -64,6 +75,7 @@ export function HabitsView() {
         today={today}
         onSelect={setSelectedId}
         onToggleToday={(id) => dispatch({ type: 'habit/toggleDate', id, date: today })}
+        onLogWater={(id, liters) => dispatch({ type: 'habit/logWater', id, date: today, liters })}
         onAdd={() => setDialog({ mode: 'create' })}
         onBrowseLibrary={() => setLibraryOpen(true)}
       />
@@ -75,6 +87,8 @@ export function HabitsView() {
           weeks={weeks}
           monthLabels={monthLabels}
           onToggleDate={(date) => dispatch({ type: 'habit/toggleDate', id: selectedHabit.id, date })}
+          onLogWater={(date, liters) => dispatch({ type: 'habit/logWater', id: selectedHabit.id, date, liters })}
+          onTogglePrayer={(date, prayer) => dispatch({ type: 'habit/togglePrayer', id: selectedHabit.id, date, prayer })}
           onEdit={() => setDialog({ mode: 'edit', habitId: selectedHabit.id })}
           onDelete={() => {
             dispatch({ type: 'habit/delete', id: selectedHabit.id })

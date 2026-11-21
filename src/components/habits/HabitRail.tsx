@@ -1,4 +1,5 @@
 import type { Habit } from '../../types'
+import { PRAYERS } from '../../types'
 import { Icon } from '../common/Icon'
 import { currentStreak } from '../../lib/stats'
 
@@ -10,6 +11,7 @@ interface HabitRailProps {
   today: string
   onSelect: (id: string) => void
   onToggleToday: (id: string) => void
+  onLogWater: (id: string, liters: number) => void
   onAdd: () => void
   onBrowseLibrary: () => void
 }
@@ -20,6 +22,7 @@ export function HabitRail({
   today,
   onSelect,
   onToggleToday,
+  onLogWater,
   onAdd,
   onBrowseLibrary,
 }: HabitRailProps) {
@@ -48,6 +51,10 @@ export function HabitRail({
         {habits.map((habit) => {
           const doneToday = habit.completedDates.includes(today)
           const streak = currentStreak(habit.completedDates)
+          const waterLogged = habit.kind === 'water' ? (habit.waterLog?.[today] ?? 0) : 0
+          const waterTarget = habit.waterTarget ?? 2
+          const prayersDone = habit.kind === 'prayer' ? (habit.prayerLog?.[today]?.length ?? 0) : 0
+
           return (
             <div
               key={habit.id}
@@ -63,21 +70,46 @@ export function HabitRail({
                 <span className="habit-rail__info">
                   <span className="habit-rail__name">{habit.name}</span>
                   <span className="habit-rail__subtitle">
-                    {streak > 0
-                      ? <><Icon name="flame" size={12} /> {streak} day streak</>
-                      : `${habit.weeklyGoal}x per week`}
+                    {habit.kind === 'water'
+                      ? `${waterLogged}/${waterTarget}L today`
+                      : habit.kind === 'prayer'
+                        ? `${prayersDone}/${PRAYERS.length} prayers today`
+                        : streak > 0
+                          ? <><Icon name="flame" size={12} /> {streak} day streak</>
+                          : `${habit.weeklyGoal}x per week`}
                   </span>
                 </span>
               </button>
-              <button
-                type="button"
-                className={`habit-check ${doneToday ? 'habit-check--done' : ''}`}
-                onClick={() => onToggleToday(habit.id)}
-                aria-label={doneToday ? `Unmark ${habit.name} for today` : `Mark ${habit.name} done for today`}
-                title={doneToday ? 'Completed today' : 'Mark as done today'}
-              >
-                <Icon name="check" size={14} strokeWidth={2.6} />
-              </button>
+
+              {habit.kind === 'check' && (
+                <button
+                  type="button"
+                  className={`habit-check ${doneToday ? 'habit-check--done' : ''}`}
+                  onClick={() => onToggleToday(habit.id)}
+                  aria-label={doneToday ? `Unmark ${habit.name} for today` : `Mark ${habit.name} done for today`}
+                  title={doneToday ? 'Completed today' : 'Mark as done today'}
+                >
+                  <Icon name="check" size={14} strokeWidth={2.6} />
+                </button>
+              )}
+
+              {habit.kind === 'water' && (
+                <button
+                  type="button"
+                  className={`habit-check habit-check--water ${doneToday ? 'habit-check--done' : ''}`}
+                  onClick={() => onLogWater(habit.id, Math.min(waterTarget, waterLogged + 0.5))}
+                  aria-label={`Add water for ${habit.name}`}
+                  title={doneToday ? `${waterLogged}L logged` : `Add 0.5L (${waterLogged}/${waterTarget}L)`}
+                >
+                  <Icon name={doneToday ? 'check' : 'plus'} size={14} strokeWidth={2.6} />
+                </button>
+              )}
+
+              {habit.kind === 'prayer' && (
+                <span className={`habit-rail__progress ${doneToday ? 'habit-rail__progress--done' : ''}`} title={`${prayersDone} of ${PRAYERS.length} prayers`}>
+                  {doneToday ? <Icon name="check" size={14} strokeWidth={2.6} /> : `${prayersDone}/${PRAYERS.length}`}
+                </span>
+              )}
             </div>
           )
         })}

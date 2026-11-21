@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import type { Habit, HabitColor } from '../../types'
+import type { Habit, HabitColor, HabitKind } from '../../types'
 import { Icon } from '../common/Icon'
 
-const EMOJIS = ['💧', '📚', '💪', '🧘', '🏃', '🥗', '✍️', '🎧', '🌱', '☀️', '🧹', '🛌']
+const EMOJIS = ['💧', '📖', '🕌', '🤲', '💪', '🧘', '🏃', '📚', '✍️', '🌱', '☀️', '🛏️']
 
 const COLORS: Array<{ value: HabitColor; label: string }> = [
   { value: 'emerald', label: 'Emerald' },
@@ -13,7 +13,13 @@ const COLORS: Array<{ value: HabitColor; label: string }> = [
   { value: 'rose', label: 'Rose' },
 ]
 
-export type HabitChanges = Pick<Habit, 'name' | 'emoji' | 'color' | 'weeklyGoal'>
+const KINDS: Array<{ value: HabitKind; label: string; description: string }> = [
+  { value: 'check', label: 'Check-off', description: 'Done or not done' },
+  { value: 'water', label: 'Water', description: 'Track liters per day' },
+  { value: 'prayer', label: 'Prayer', description: 'Mark the 5 daily prayers' },
+]
+
+export type HabitChanges = Pick<Habit, 'name' | 'emoji' | 'color' | 'weeklyGoal' | 'kind' | 'waterTarget'>
 
 interface HabitDialogProps {
   habit?: Habit
@@ -26,6 +32,8 @@ export function HabitDialog({ habit, onClose, onSubmit }: HabitDialogProps) {
   const [emoji, setEmoji] = useState(habit?.emoji ?? '🌱')
   const [color, setColor] = useState<HabitColor>(habit?.color ?? 'emerald')
   const [weeklyGoal, setWeeklyGoal] = useState(habit?.weeklyGoal ?? 7)
+  const [kind, setKind] = useState<HabitKind>(habit?.kind ?? 'check')
+  const [waterTarget, setWaterTarget] = useState(habit?.waterTarget ?? 2)
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -39,7 +47,14 @@ export function HabitDialog({ habit, onClose, onSubmit }: HabitDialogProps) {
     event.preventDefault()
     const trimmed = name.trim()
     if (!trimmed) return
-    onSubmit({ name: trimmed, emoji, color, weeklyGoal })
+    onSubmit({
+      name: trimmed,
+      emoji,
+      color,
+      weeklyGoal,
+      kind,
+      waterTarget: kind === 'water' ? Math.max(0.5, waterTarget) : undefined,
+    })
   }
 
   return (
@@ -65,12 +80,45 @@ export function HabitDialog({ habit, onClose, onSubmit }: HabitDialogProps) {
               className="field__input"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              placeholder="e.g. Morning walk"
+              placeholder="e.g. Drink water"
               maxLength={50}
               autoFocus
               required
             />
           </label>
+
+          <fieldset className="field">
+            <legend className="field__label">Type</legend>
+            <div className="kind-picker">
+              {KINDS.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`kind-option ${kind === option.value ? 'kind-option--selected' : ''}`}
+                  onClick={() => setKind(option.value)}
+                  aria-pressed={kind === option.value}
+                >
+                  <strong>{option.label}</strong>
+                  <small>{option.description}</small>
+                </button>
+              ))}
+            </div>
+          </fieldset>
+
+          {kind === 'water' && (
+            <label className="field">
+              <span className="field__label">Daily target (liters)</span>
+              <input
+                className="field__input"
+                type="number"
+                min={0.5}
+                max={10}
+                step={0.5}
+                value={waterTarget}
+                onChange={(event) => setWaterTarget(Number(event.target.value))}
+              />
+            </label>
+          )}
 
           <fieldset className="field">
             <legend className="field__label">Icon</legend>

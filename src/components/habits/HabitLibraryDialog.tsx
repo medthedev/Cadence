@@ -88,7 +88,11 @@ export function HabitLibraryDialog({ addedNames, onClose, onAdd }: HabitLibraryD
                 </div>
                 <div className="library-card__footer">
                   <span className="library-card__meta">
-                    {template.category} · {template.weeklyGoal}x/week
+                    {template.category} · {template.kind === 'water'
+                      ? `${template.waterTarget ?? 2}L/day`
+                      : template.kind === 'prayer'
+                        ? '5 prayers/day'
+                        : `${template.weeklyGoal}x/week`}
                   </span>
                   <button
                     type="button"

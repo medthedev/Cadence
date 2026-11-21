@@ -30,7 +30,7 @@ export function HabitOverview({ habits, today, weeks, monthLabels, onSelectHabit
           <EmptyState
             icon="book"
             title="Start your first habit"
-            description="Browse the library for 100+ ideas, including prayer, reading, fitness and more."
+            description="Pick a simple habit to start - prayer, water, reading, and more."
             action={
               <button type="button" className="button button--primary" onClick={onBrowseLibrary}>
                 <Icon name="book" size={16} />
