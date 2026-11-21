@@ -1,6 +1,7 @@
 import type { AppData, FocusSession, Habit, Priority, TimeBlock, Todo } from '../types'
 
 export type AppAction =
+  | { type: 'data/replace'; data: AppData }
   | { type: 'todo/add'; todo: Todo }
   | { type: 'todo/toggle'; id: string }
   | { type: 'todo/rename'; id: string; title: string }
@@ -19,6 +20,9 @@ export type AppAction =
 
 export function appReducer(state: AppData, action: AppAction): AppData {
   switch (action.type) {
+    case 'data/replace':
+      return action.data
+
     case 'todo/add':
       return { ...state, todos: [action.todo, ...state.todos] }
 

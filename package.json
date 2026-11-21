@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "bun scripts/dev.js",
+    "dev:client": "vite",
+    "cloud": "bun server/index.js",
+    "start:cloud": "bun server/index.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { CloudDialog } from './components/cloud/CloudDialog'
 import { HabitsView } from './components/habits/HabitsView'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
@@ -12,6 +13,7 @@ import type { View } from './types'
 
 function Workspace() {
   const [view, setView] = useState<View>('todos')
+  const [cloudOpen, setCloudOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const { data } = useAppData()
 
@@ -34,7 +36,12 @@ function Workspace() {
       />
       <main className="main">
         <div className="main__inner">
-          <Header view={view} theme={theme} onThemeChange={setTheme} />
+          <Header
+            view={view}
+            theme={theme}
+            onThemeChange={setTheme}
+            onCloudClick={() => setCloudOpen(true)}
+          />
           <div className="main__content">
             {view === 'todos' && <TodosView />}
             {view === 'habits' && <HabitsView />}
@@ -42,6 +49,7 @@ function Workspace() {
           </div>
         </div>
       </main>
+      {cloudOpen && <CloudDialog onClose={() => setCloudOpen(false)} />}
     </div>
   )
 }

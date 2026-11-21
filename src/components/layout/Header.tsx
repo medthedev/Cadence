@@ -1,4 +1,6 @@
 import { formatLongDate } from '../../lib/date'
+import { useAppData } from '../../store/context'
+import type { SyncStatus } from '../../store/context'
 import type { Theme, View } from '../../types'
 import { Icon } from '../common/Icon'
 import { ThemePicker } from './ThemePicker'
@@ -7,6 +9,7 @@ interface HeaderProps {
   view: View
   theme: Theme
   onThemeChange: (theme: Theme) => void
+  onCloudClick: () => void
 }
 
 const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string }> = {
@@ -27,8 +30,18 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
   },
 }
 
-export function Header({ view, theme, onThemeChange }: HeaderProps) {
+const CLOUD_LABEL: Record<SyncStatus, string> = {
+  offline: 'Cloud',
+  connecting: 'Connecting',
+  syncing: 'Syncing',
+  connected: 'Synced',
+  error: 'Cloud error',
+}
+
+export function Header({ view, theme, onThemeChange, onCloudClick }: HeaderProps) {
   const copy = VIEW_COPY[view]
+  const { sync } = useAppData()
+  const offline = sync.status === 'offline' || sync.status === 'error'
 
   return (
     <header className="app-header">
@@ -39,6 +52,16 @@ export function Header({ view, theme, onThemeChange }: HeaderProps) {
       </div>
 
       <div className="app-header__actions">
+        <button
+          type="button"
+          className={`cloud-button cloud-button--${sync.status}`}
+          onClick={onCloudClick}
+          title="Cloud sync settings"
+        >
+          <span className="cloud-button__dot" />
+          <Icon name={offline ? 'cloudOff' : 'cloud'} size={15} />
+          <span>{CLOUD_LABEL[sync.status]}</span>
+        </button>
         <div className="date-chip">
           <Icon name="sparkles" size={15} />
           <span>{formatLongDate(new Date())}</span>

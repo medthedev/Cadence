@@ -50,7 +50,7 @@ function isFocusSession(value: unknown): value is FocusSession {
     && typeof value.endedAt === 'string'
 }
 
-function isAppData(value: unknown): value is AppData {
+export function isAppData(value: unknown): value is AppData {
   return isRecord(value)
     && value.version === 2
     && Array.isArray(value.todos)
