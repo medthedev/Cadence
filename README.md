@@ -1,75 +1,60 @@
-# React + TypeScript + Vite
+# FreeTodo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A calm, local-first workspace for tasks and habits, built with React, TypeScript and Vite. It includes a GitHub-style contribution grid that shows every day you have checked off a habit.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Tasks
+- Add tasks with a low / medium / high priority.
+- Complete, rename (inline), and delete tasks, or clear everything completed.
+- Filter by All / Active / Completed and search by title.
+- Live progress summary; tasks are sorted by status, priority, and age.
 
-## React Compiler
+### Habits
+- Create habits with an icon, color, and weekly goal (1–7 days).
+- A 53-week contribution grid with GitHub's green shades: click any past day to mark or unmark it.
+- Darker green marks days in weeks where you reached your weekly goal.
+- Overview mode combines all habits into one heatmap.
+- Stats for current streak (with a yesterday grace day), longest streak, weekly progress, and 30/90-day consistency.
+- Mark today as done directly from the habit list.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### General
+- Light and dark themes (follows system preference until you toggle it).
+- All data is saved to `localStorage` under `freetodo.data.v1`; no account or backend needed.
+- First run includes sample tasks and habits with a few months of history so the grid is populated.
+- Responsive layout for desktop, tablet, and mobile.
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+bun install
+bun run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Other scripts:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+bun run lint   # ESLint
+bun run build  # type-check + production build
+bun run preview
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project structure
 
 ```
+src/
+├── components/
+│   ├── common/       # Icon, EmptyState, StatCard
+│   ├── habits/       # grid, rail, detail, overview, create/edit dialog
+│   ├── layout/       # header and sidebar
+│   └── todos/        # composer, filterable list, task row
+├── data/seed.ts      # first-run demo data
+├── hooks/useTheme.ts # theme preference
+├── lib/              # date keys/calendar, statistics, ids, storage
+├── store/            # reducer, context, persistence provider
+├── styles/           # base tokens, tasks, habits
+├── types.ts          # domain models
+└── App.tsx           # shell and view switching
+```
+
+Dates are stored as local `YYYY-MM-DD` keys so the grid and streaks stay in the user's timezone. All state changes go through one reducer in `src/store/reducer.ts`, which the provider persists to local storage.
