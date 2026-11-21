@@ -51,6 +51,43 @@ export function getWeekdayName(dayIndex: number): string {
   return WEEKDAY_NAMES[dayIndex]
 }
 
+export interface MonthDay {
+  key: string
+  date: Date
+  inMonth: boolean
+  isToday: boolean
+}
+
+export function addMonths(date: Date, amount: number): Date {
+  return new Date(date.getFullYear(), date.getMonth() + amount, 1)
+}
+
+export function monthKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+}
+
+export function formatMonth(date: Date): string {
+  return date.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+}
+
+/** Six-week grid so every month renders without layout jumps. */
+export function buildMonthGrid(monthDate: Date): MonthDay[][] {
+  const first = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1)
+  let cursor = startOfWeek(first)
+  const today = todayKey()
+
+  return Array.from({ length: 6 }, () => Array.from({ length: 7 }, () => {
+    const day: MonthDay = {
+      key: toDateKey(cursor),
+      date: new Date(cursor),
+      inMonth: cursor.getMonth() === monthDate.getMonth(),
+      isToday: toDateKey(cursor) === today,
+    }
+    cursor = addDays(cursor, 1)
+    return day
+  }))
+}
+
 export function formatDate(key: string): string {
   return fromDateKey(key).toLocaleDateString(undefined, {
     month: 'short',

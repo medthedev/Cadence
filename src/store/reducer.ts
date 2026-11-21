@@ -1,4 +1,6 @@
-import type { AppData, FocusSession, Habit, Priority, TimeBlock, Todo } from '../types'
+import type {
+  AppData, CalendarEvent, FocusSession, Habit, Priority, TimeBlock, Todo, Transaction,
+} from '../types'
 
 export type AppAction =
   | { type: 'data/replace'; data: AppData }
@@ -17,6 +19,13 @@ export type AppAction =
   | { type: 'habit/update'; id: string; changes: Pick<Habit, 'name' | 'emoji' | 'color' | 'weeklyGoal'> }
   | { type: 'habit/toggleDate'; id: string; date: string }
   | { type: 'habit/delete'; id: string }
+  | { type: 'event/add'; event: CalendarEvent }
+  | { type: 'event/update'; id: string; changes: Pick<CalendarEvent, 'title' | 'date' | 'time' | 'category' | 'notes'> }
+  | { type: 'event/delete'; id: string }
+  | { type: 'transaction/add'; transaction: Transaction }
+  | { type: 'transaction/delete'; id: string }
+  | { type: 'finance/currency'; currency: string }
+  | { type: 'finance/budget'; amount: number }
 
 export function appReducer(state: AppData, action: AppAction): AppData {
   switch (action.type) {
@@ -121,5 +130,31 @@ export function appReducer(state: AppData, action: AppAction): AppData {
 
     case 'habit/delete':
       return { ...state, habits: state.habits.filter((habit) => habit.id !== action.id) }
+
+    case 'event/add':
+      return { ...state, events: [...state.events, action.event] }
+
+    case 'event/update':
+      return {
+        ...state,
+        events: state.events.map((event) => event.id === action.id
+          ? { ...event, ...action.changes }
+          : event),
+      }
+
+    case 'event/delete':
+      return { ...state, events: state.events.filter((event) => event.id !== action.id) }
+
+    case 'transaction/add':
+      return { ...state, transactions: [action.transaction, ...state.transactions] }
+
+    case 'transaction/delete':
+      return { ...state, transactions: state.transactions.filter((item) => item.id !== action.id) }
+
+    case 'finance/currency':
+      return { ...state, currency: action.currency }
+
+    case 'finance/budget':
+      return { ...state, monthlyBudget: action.amount }
   }
 }

@@ -30,6 +30,16 @@ export type IconName =
   | 'unlink'
   | 'timer'
   | 'calendar'
+  | 'home'
+  | 'wallet'
+  | 'receipt'
+  | 'pie'
+  | 'bell'
+  | 'note'
+  | 'droplet'
+  | 'tag'
+  | 'chevronLeft'
+  | 'chevronRight'
 
 const ICON_PATHS: Record<IconName, ReactNode> = {
   check: <polyline points="20 6 9 17 4 12" />,
@@ -166,6 +176,47 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
       <path d="M8 3v4M16 3v4M3 10h18" />
     </>
   ),
+  home: <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V10Z" />,
+  wallet: (
+    <>
+      <path d="M3 7a2 2 0 0 1 2-2h13v4" />
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M16 13h2" />
+    </>
+  ),
+  receipt: (
+    <>
+      <path d="M5 3h14v18l-3-2-4 2-4-2-3 2V3Z" />
+      <path d="M9 8h6M9 12h6" />
+    </>
+  ),
+  pie: (
+    <>
+      <path d="M12 3a9 9 0 1 0 9 9h-9V3Z" />
+      <path d="M15 3.5A9 9 0 0 1 20.5 9H15V3.5Z" />
+    </>
+  ),
+  bell: (
+    <>
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+      <path d="M10 21h4" />
+    </>
+  ),
+  note: (
+    <>
+      <rect x="4" y="3" width="16" height="18" rx="2" />
+      <path d="M8 8h8M8 12h8M8 16h5" />
+    </>
+  ),
+  droplet: <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z" />,
+  tag: (
+    <>
+      <path d="M20 13 12 21 3 12V3h9l8 8a2 2 0 0 1 0 2Z" />
+      <circle cx="7.5" cy="7.5" r="1" />
+    </>
+  ),
+  chevronLeft: <polyline points="15 18 9 12 15 6" />,
+  chevronRight: <polyline points="9 18 15 12 9 6" />,
 }
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {

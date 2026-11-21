@@ -1,4 +1,8 @@
-import type { AppData, FocusMode, FocusSession, Habit, TimeBlock, Todo } from '../types'
+import type {
+  AppData, CalendarEvent, ExpenseCategory, EventCategory, FocusMode, FocusSession,
+  Habit, TimeBlock, Todo, Transaction,
+} from '../types'
+import { EXPENSE_CATEGORIES, EVENT_CATEGORIES } from '../types'
 
 const STORAGE_KEY = 'freetodo.data.v1'
 
@@ -50,44 +54,93 @@ function isFocusSession(value: unknown): value is FocusSession {
     && typeof value.endedAt === 'string'
 }
 
+function isEventCategory(value: unknown): value is EventCategory {
+  return EVENT_CATEGORIES.some((category) => category === value)
+}
+
+function isCalendarEvent(value: unknown): value is CalendarEvent {
+  return isRecord(value)
+    && typeof value.id === 'string'
+    && typeof value.date === 'string'
+    && typeof value.title === 'string'
+    && isEventCategory(value.category)
+    && typeof value.createdAt === 'string'
+}
+
+function isExpenseCategory(value: unknown): value is ExpenseCategory {
+  return EXPENSE_CATEGORIES.some((category) => category === value)
+}
+
+function isTransaction(value: unknown): value is Transaction {
+  return isRecord(value)
+    && typeof value.id === 'string'
+    && typeof value.date === 'string'
+    && typeof value.title === 'string'
+    && typeof value.amount === 'number'
+    && isExpenseCategory(value.category)
+    && (value.type === 'expense' || value.type === 'income')
+    && typeof value.createdAt === 'string'
+}
+
 export function isAppData(value: unknown): value is AppData {
   return isRecord(value)
-    && value.version === 2
+    && value.version === 3
     && Array.isArray(value.todos)
     && Array.isArray(value.habits)
     && Array.isArray(value.timeBlocks)
     && Array.isArray(value.focusSessions)
+    && Array.isArray(value.events)
+    && Array.isArray(value.transactions)
+    && typeof value.currency === 'string'
+    && typeof value.monthlyBudget === 'number'
     && value.todos.every(isTodo)
     && value.habits.every(isHabit)
     && value.timeBlocks.every(isTimeBlock)
     && value.focusSessions.every(isFocusSession)
+    && value.events.every(isCalendarEvent)
+    && value.transactions.every(isTransaction)
 }
 
 export function createEmptyData(): AppData {
-  return { version: 2, todos: [], habits: [], timeBlocks: [], focusSessions: [] }
+  return {
+    version: 3,
+    todos: [],
+    habits: [],
+    timeBlocks: [],
+    focusSessions: [],
+    events: [],
+    transactions: [],
+    currency: 'USD',
+    monthlyBudget: 0,
+  }
 }
 
-function migrate(value: unknown): AppData | null {
+/** Accepts every historical shape and returns a current workspace. */
+export function migrateData(value: unknown): AppData | null {
   if (!isRecord(value)) return null
+  if (value.version === 3) return isAppData(value) ? value : null
 
-  if (value.version === 1 && Array.isArray(value.todos) && Array.isArray(value.habits)) {
+  if (value.version === 1 || value.version === 2) {
     return {
       ...createEmptyData(),
-      todos: value.todos.filter(isTodo),
-      habits: value.habits.filter(isHabit),
+      todos: Array.isArray(value.todos) ? value.todos.filter(isTodo) : [],
+      habits: Array.isArray(value.habits) ? value.habits.filter(isHabit) : [],
+      timeBlocks: Array.isArray(value.timeBlocks) ? value.timeBlocks.filter(isTimeBlock) : [],
+      focusSessions: Array.isArray(value.focusSessions)
+        ? value.focusSessions.filter(isFocusSession)
+        : [],
     }
   }
 
-  return isAppData(value) ? value : null
+  return null
 }
 
 export function loadData(): AppData {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return createEmptyData()
-
     const parsed: unknown = JSON.parse(raw)
-    return migrate(parsed) ?? createEmptyData()
+    return migrateData(parsed) ?? createEmptyData()
   } catch {
     return createEmptyData()
   }

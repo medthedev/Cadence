@@ -1,5 +1,5 @@
 import type { AppData } from '../types'
-import { isAppData } from './storage'
+import { migrateData } from './storage'
 
 export interface CloudConfig {
   connectionUrl: string
@@ -30,11 +30,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
 }
 
-function isCloudRecord(value: unknown): value is CloudRecord {
-  return isRecord(value)
-    && isAppData(value.data)
-    && typeof value.revision === 'number'
-    && typeof value.updatedAt === 'string'
+function normalizeRecord(value: unknown): CloudRecord | null {
+  if (!isRecord(value) || typeof value.revision !== 'number' || typeof value.updatedAt !== 'string') {
+    return null
+  }
+  const data = migrateData(value.data)
+  return data ? { data, revision: value.revision, updatedAt: value.updatedAt } : null
 }
 
 export function generateSyncCode(): string {
@@ -127,8 +128,9 @@ async function rpc<T>(connectionUrl: string, functionName: string, args: Record<
 export async function cloudPull(config: CloudConfig): Promise<CloudRecord | null> {
   const body = await rpc<unknown>(config.connectionUrl, 'sync_pull', { p_code: config.code })
   if (body === null) return null
-  if (!isCloudRecord(body)) throw new Error('Unexpected response from Supabase')
-  return body
+  const record = normalizeRecord(body)
+  if (!record) throw new Error('Unexpected response from Supabase')
+  return record
 }
 
 export async function cloudPush(config: CloudConfig, data: AppData): Promise<number> {
@@ -140,7 +142,8 @@ export async function cloudPush(config: CloudConfig, data: AppData): Promise<num
 
   if (!isRecord(body)) throw new Error('Unexpected response from Supabase')
   if (body.conflict === true) {
-    if (isCloudRecord(body.remote)) throw new CloudConflictError(body.remote)
+    const remote = normalizeRecord(body.remote)
+    if (remote) throw new CloudConflictError(remote)
     throw new Error('Supabase data is out of sync')
   }
   if (typeof body.revision !== 'number') throw new Error('Unexpected response from Supabase')
