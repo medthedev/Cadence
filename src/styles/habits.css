@@ -128,14 +128,22 @@
 .habit-avatar--amber { background: #fdf3e0; }
 .habit-avatar--rose { background: #fdecef; }
 
-:root[data-theme='github-dark'],
-:root[data-theme='equicord'] .habit-avatar--sky { background: #17323f; }
-:root[data-theme='github-dark'],
-:root[data-theme='equicord'] .habit-avatar--violet { background: #2b2440; }
-:root[data-theme='github-dark'],
-:root[data-theme='equicord'] .habit-avatar--amber { background: #3a2c19; }
-:root[data-theme='github-dark'],
-:root[data-theme='equicord'] .habit-avatar--rose { background: #3d232c; }
+:root[data-theme*='dark'] .habit-avatar--sky,
+:root[data-theme='catppuccin-frappe'] .habit-avatar--sky,
+:root[data-theme='catppuccin-macchiato'] .habit-avatar--sky,
+:root[data-theme='catppuccin-mocha'] .habit-avatar--sky { background: color-mix(in srgb, var(--habit-sky) 18%, var(--surface)); }
+:root[data-theme*='dark'] .habit-avatar--violet,
+:root[data-theme='catppuccin-frappe'] .habit-avatar--violet,
+:root[data-theme='catppuccin-macchiato'] .habit-avatar--violet,
+:root[data-theme='catppuccin-mocha'] .habit-avatar--violet { background: color-mix(in srgb, var(--habit-violet) 18%, var(--surface)); }
+:root[data-theme*='dark'] .habit-avatar--amber,
+:root[data-theme='catppuccin-frappe'] .habit-avatar--amber,
+:root[data-theme='catppuccin-macchiato'] .habit-avatar--amber,
+:root[data-theme='catppuccin-mocha'] .habit-avatar--amber { background: color-mix(in srgb, var(--habit-amber) 18%, var(--surface)); }
+:root[data-theme*='dark'] .habit-avatar--rose,
+:root[data-theme='catppuccin-frappe'] .habit-avatar--rose,
+:root[data-theme='catppuccin-macchiato'] .habit-avatar--rose,
+:root[data-theme='catppuccin-mocha'] .habit-avatar--rose { background: color-mix(in srgb, var(--habit-rose) 18%, var(--surface)); }
 
 .habit-check {
   display: grid;
@@ -158,7 +166,7 @@
 .habit-check--done {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .habit-rail__add {
@@ -637,16 +645,4 @@
   }
 }
 
-:root[data-theme='mono'] .habit-avatar--overview,
-:root[data-theme='mono'] .habit-avatar--emerald,
-:root[data-theme='mono'] .habit-avatar--sky,
-:root[data-theme='mono'] .habit-avatar--violet,
-:root[data-theme='mono'] .habit-avatar--amber,
-:root[data-theme='mono'] .habit-avatar--rose {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-}
 
-:root[data-theme='mono'] .habit-rail__subtitle svg {
-  color: #ffffff;
-}
