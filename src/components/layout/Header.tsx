@@ -18,6 +18,11 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
     title: 'Today',
     subtitle: 'A clear view of what matters right now.',
   },
+  insights: {
+    eyebrow: 'Overview / Insights',
+    title: 'Insights',
+    subtitle: 'Your progress, day by day, month by month, year by year.',
+  },
   todos: {
     eyebrow: 'Workspace / Tasks',
     title: 'Tasks',

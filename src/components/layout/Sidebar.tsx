@@ -30,7 +30,10 @@ export function Sidebar({
   const sections: Array<{ label: string; items: NavItem[] }> = [
     {
       label: 'Overview',
-      items: [{ id: 'today', label: 'Today', icon: 'home', count: 0 }],
+      items: [
+        { id: 'today', label: 'Today', icon: 'home', count: 0 },
+        { id: 'insights', label: 'Insights', icon: 'chart', count: 0 },
+      ],
     },
     {
       label: 'Workspace',

@@ -3,6 +3,7 @@ import { CalendarView } from './components/calendar/CalendarView'
 import { CloudDialog } from './components/cloud/CloudDialog'
 import { ExpenseView } from './components/expenses/ExpenseView'
 import { HabitsView } from './components/habits/HabitsView'
+import { InsightsView } from './components/insights/InsightsView'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import { TimeView } from './components/time/TimeView'
@@ -50,6 +51,7 @@ function Workspace() {
           />
           <div className="main__content">
             {view === 'today' && <TodayView onNavigate={setView} />}
+            {view === 'insights' && <InsightsView onNavigate={setView} />}
             {view === 'todos' && <TodosView />}
             {view === 'habits' && <HabitsView />}
             {view === 'time' && <TimeView />}
