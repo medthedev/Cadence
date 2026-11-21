@@ -1,0 +1,74 @@
+import type { View } from '../../types'
+import { Icon } from '../common/Icon'
+import type { IconName } from '../common/Icon'
+
+interface SidebarProps {
+  view: View
+  onViewChange: (view: View) => void
+  activeTodos: number
+  habitCount: number
+  todayProgress: number
+}
+
+const RING_RADIUS = 22
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS
+
+export function Sidebar({ view, onViewChange, activeTodos, habitCount, todayProgress }: SidebarProps) {
+  const navItems: Array<{ id: View; label: string; icon: IconName; count: number }> = [
+    { id: 'todos', label: 'Tasks', icon: 'list', count: activeTodos },
+    { id: 'habits', label: 'Habits', icon: 'grid', count: habitCount },
+  ]
+
+  return (
+    <aside className="sidebar">
+      <div className="brand">
+        <div className="brand__mark"><Icon name="check" size={20} /></div>
+        <div>
+          <p className="brand__name">FreeTodo</p>
+          <p className="brand__tagline">Personal workspace</p>
+        </div>
+      </div>
+
+      <nav className="sidebar__nav" aria-label="Main navigation">
+        <p className="sidebar__label">Workspace</p>
+        {navItems.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            className={`nav-item ${view === item.id ? 'nav-item--active' : ''}`}
+            onClick={() => onViewChange(item.id)}
+            aria-current={view === item.id ? 'page' : undefined}
+          >
+            <Icon name={item.icon} size={18} />
+            <span className="nav-item__label">{item.label}</span>
+            <span className="nav-item__count">{item.count}</span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="sidebar__footer">
+        <div className="focus-card">
+          <div className="focus-card__ring">
+            <svg viewBox="0 0 52 52" width="52" height="52" aria-hidden="true">
+              <circle className="focus-card__ring-track" cx="26" cy="26" r={RING_RADIUS} />
+              <circle
+                className="focus-card__ring-value"
+                cx="26"
+                cy="26"
+                r={RING_RADIUS}
+                strokeDasharray={RING_CIRCUMFERENCE}
+                strokeDashoffset={RING_CIRCUMFERENCE * (1 - todayProgress / 100)}
+              />
+            </svg>
+            <span>{todayProgress}%</span>
+          </div>
+          <div>
+            <p className="focus-card__title">Today's rhythm</p>
+            <p className="focus-card__text">Habits checked off today</p>
+          </div>
+        </div>
+        <p className="sidebar__note">Consistency beats intensity.</p>
+      </div>
+    </aside>
+  )
+}
