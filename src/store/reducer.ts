@@ -1,6 +1,6 @@
 import type {
-  AppData, CalendarEvent, FocusSession, Goal, GoalMilestone, Habit, JournalEntry,
-  LifeList, ListItem, Person, Priority, TimeBlock, Todo, Transaction,
+  AppData, CalendarEvent, FocusSession, Goal, GoalMilestone, Habit,
+  LifeList, ListItem, Priority, TimeBlock, Todo, Transaction,
 } from '../types'
 
 export type AppAction =
@@ -32,12 +32,6 @@ export type AppAction =
   | { type: 'goal/milestoneAdd'; goalId: string; milestone: GoalMilestone }
   | { type: 'goal/milestoneToggle'; goalId: string; milestoneId: string }
   | { type: 'goal/milestoneDelete'; goalId: string; milestoneId: string }
-  | { type: 'journal/upsert'; entry: JournalEntry }
-  | { type: 'journal/delete'; id: string }
-  | { type: 'person/add'; person: Person }
-  | { type: 'person/update'; id: string; changes: Partial<Pick<Person, 'name' | 'relationship' | 'birthday' | 'nextContact' | 'cadenceDays' | 'notes'>> }
-  | { type: 'person/contact'; id: string; lastContact: string; nextContact?: string }
-  | { type: 'person/delete'; id: string }
   | { type: 'list/add'; list: LifeList }
   | { type: 'list/delete'; id: string }
   | { type: 'list/itemAdd'; listId: string; item: ListItem }
@@ -222,38 +216,6 @@ export function appReducer(state: AppData, action: AppAction): AppData {
           ? { ...goal, milestones: goal.milestones.filter((milestone) => milestone.id !== action.milestoneId) }
           : goal),
       }
-
-    case 'journal/upsert':
-      return {
-        ...state,
-        journal: [action.entry, ...state.journal.filter((entry) => entry.id !== action.entry.id
-          && entry.date !== action.entry.date)],
-      }
-
-    case 'journal/delete':
-      return { ...state, journal: state.journal.filter((entry) => entry.id !== action.id) }
-
-    case 'person/add':
-      return { ...state, people: [...state.people, action.person] }
-
-    case 'person/update':
-      return {
-        ...state,
-        people: state.people.map((person) => person.id === action.id
-          ? { ...person, ...action.changes }
-          : person),
-      }
-
-    case 'person/contact':
-      return {
-        ...state,
-        people: state.people.map((person) => person.id === action.id
-          ? { ...person, lastContact: action.lastContact, nextContact: action.nextContact }
-          : person),
-      }
-
-    case 'person/delete':
-      return { ...state, people: state.people.filter((person) => person.id !== action.id) }
 
     case 'list/add':
       return { ...state, lists: [action.list, ...state.lists] }

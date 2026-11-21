@@ -1,9 +1,8 @@
 import type {
   AppData, CalendarEvent, ExpenseCategory, EventCategory, FocusMode, FocusSession,
-  Goal, GoalMilestone, Habit, JournalEntry, LifeList, ListItem, Mood, Person,
-  TimeBlock, Todo, Transaction,
+  Goal, GoalMilestone, Habit, LifeList, ListItem, TimeBlock, Todo, Transaction,
 } from '../types'
-import { EXPENSE_CATEGORIES, EVENT_CATEGORIES, GOAL_CATEGORIES, MOODS } from '../types'
+import { EXPENSE_CATEGORIES, EVENT_CATEGORIES, GOAL_CATEGORIES } from '../types'
 
 const STORAGE_KEY = 'cadence.data.v1'
 
@@ -105,33 +104,6 @@ function isGoal(value: unknown): value is Goal {
     && value.milestones.every(isGoalMilestone)
 }
 
-function isMood(value: unknown): value is Mood {
-  return MOODS.some((mood) => mood.value === value)
-}
-
-function isJournalEntry(value: unknown): value is JournalEntry {
-  return isRecord(value)
-    && typeof value.id === 'string'
-    && typeof value.date === 'string'
-    && isMood(value.mood)
-    && typeof value.content === 'string'
-    && typeof value.createdAt === 'string'
-    && typeof value.updatedAt === 'string'
-}
-
-function isPerson(value: unknown): value is Person {
-  return isRecord(value)
-    && typeof value.id === 'string'
-    && typeof value.name === 'string'
-    && typeof value.cadenceDays === 'number'
-    && typeof value.createdAt === 'string'
-    && (value.relationship === undefined || typeof value.relationship === 'string')
-    && (value.birthday === undefined || typeof value.birthday === 'string')
-    && (value.nextContact === undefined || typeof value.nextContact === 'string')
-    && (value.lastContact === undefined || typeof value.lastContact === 'string')
-    && (value.notes === undefined || typeof value.notes === 'string')
-}
-
 function isListItem(value: unknown): value is ListItem {
   return isRecord(value)
     && typeof value.id === 'string'
@@ -152,7 +124,7 @@ function isLifeList(value: unknown): value is LifeList {
 
 export function isAppData(value: unknown): value is AppData {
   return isRecord(value)
-    && value.version === 5
+    && value.version === 6
     && Array.isArray(value.todos)
     && Array.isArray(value.habits)
     && Array.isArray(value.timeBlocks)
@@ -160,8 +132,6 @@ export function isAppData(value: unknown): value is AppData {
     && Array.isArray(value.events)
     && Array.isArray(value.transactions)
     && Array.isArray(value.goals)
-    && Array.isArray(value.journal)
-    && Array.isArray(value.people)
     && Array.isArray(value.lists)
     && typeof value.currency === 'string'
     && typeof value.monthlyBudget === 'number'
@@ -173,14 +143,12 @@ export function isAppData(value: unknown): value is AppData {
     && value.events.every(isCalendarEvent)
     && value.transactions.every(isTransaction)
     && value.goals.every(isGoal)
-    && value.journal.every(isJournalEntry)
-    && value.people.every(isPerson)
     && value.lists.every(isLifeList)
 }
 
 export function createEmptyData(): AppData {
   return {
-    version: 5,
+    version: 6,
     todos: [],
     habits: [],
     timeBlocks: [],
@@ -188,8 +156,6 @@ export function createEmptyData(): AppData {
     events: [],
     transactions: [],
     goals: [],
-    journal: [],
-    people: [],
     lists: [],
     currency: 'USD',
     monthlyBudget: 0,
@@ -200,9 +166,9 @@ export function createEmptyData(): AppData {
 /** Accepts every historical shape and returns a current workspace. */
 export function migrateData(value: unknown): AppData | null {
   if (!isRecord(value)) return null
-  if (value.version === 5) return isAppData(value) ? value : null
+  if (value.version === 6) return isAppData(value) ? value : null
 
-  if (typeof value.version === 'number' && value.version >= 1 && value.version <= 4) {
+  if (typeof value.version === 'number' && value.version >= 1 && value.version <= 5) {
     return {
       ...createEmptyData(),
       todos: Array.isArray(value.todos) ? value.todos.filter(isTodo) : [],
@@ -216,8 +182,6 @@ export function migrateData(value: unknown): AppData | null {
         ? value.transactions.filter(isTransaction)
         : [],
       goals: Array.isArray(value.goals) ? value.goals.filter(isGoal) : [],
-      journal: Array.isArray(value.journal) ? value.journal.filter(isJournalEntry) : [],
-      people: Array.isArray(value.people) ? value.people.filter(isPerson) : [],
       lists: Array.isArray(value.lists) ? value.lists.filter(isLifeList) : [],
       currency: typeof value.currency === 'string' ? value.currency : 'USD',
       monthlyBudget: typeof value.monthlyBudget === 'number' ? value.monthlyBudget : 0,

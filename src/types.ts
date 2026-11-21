@@ -13,15 +13,6 @@ export type ExpenseCategory = typeof EXPENSE_CATEGORIES[number]
 export const GOAL_CATEGORIES = ['personal', 'career', 'health', 'learning', 'finance', 'other'] as const
 export type GoalCategory = typeof GOAL_CATEGORIES[number]
 
-export const MOODS = [
-  { value: 'great', emoji: '🤩', label: 'Great' },
-  { value: 'good', emoji: '😊', label: 'Good' },
-  { value: 'okay', emoji: '😐', label: 'Okay' },
-  { value: 'low', emoji: '😔', label: 'Low' },
-  { value: 'rough', emoji: '😣', label: 'Rough' },
-] as const
-export type Mood = typeof MOODS[number]['value']
-
 export interface Todo {
   id: string
   title: string
@@ -103,27 +94,6 @@ export interface Goal {
   milestones: GoalMilestone[]
 }
 
-export interface JournalEntry {
-  id: string
-  date: string
-  mood: Mood
-  content: string
-  createdAt: string
-  updatedAt: string
-}
-
-export interface Person {
-  id: string
-  name: string
-  relationship?: string
-  birthday?: string
-  nextContact?: string
-  cadenceDays: number
-  notes?: string
-  createdAt: string
-  lastContact?: string
-}
-
 export interface ListItem {
   id: string
   text: string
@@ -142,7 +112,7 @@ export interface LifeList {
 export type FocusMode = 'focus' | 'short-break' | 'long-break'
 
 export interface AppData {
-  version: 5
+  version: 6
   todos: Todo[]
   habits: Habit[]
   timeBlocks: TimeBlock[]
@@ -150,8 +120,6 @@ export interface AppData {
   events: CalendarEvent[]
   transactions: Transaction[]
   goals: Goal[]
-  journal: JournalEntry[]
-  people: Person[]
   lists: LifeList[]
   currency: string
   monthlyBudget: number
@@ -167,8 +135,6 @@ export type View =
   | 'goals'
   | 'calendar'
   | 'expenses'
-  | 'journal'
-  | 'people'
   | 'lists'
 
 export type Theme = 'github-light' | 'github-dark' | 'equicord' | 'mono'
