@@ -2,4 +2,7 @@
 @import './todos.css';
 @import './habits.css';
 @import './time.css';
+@import './calendar.css';
+@import './expenses.css';
+@import './today.css';
 @import './cloud.css';

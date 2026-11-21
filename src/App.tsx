@@ -1,9 +1,12 @@
 import { useState } from 'react'
+import { CalendarView } from './components/calendar/CalendarView'
 import { CloudDialog } from './components/cloud/CloudDialog'
+import { ExpenseView } from './components/expenses/ExpenseView'
 import { HabitsView } from './components/habits/HabitsView'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import { TimeView } from './components/time/TimeView'
+import { TodayView } from './components/today/TodayView'
 import { TodosView } from './components/todos/TodosView'
 import { useTheme } from './hooks/useTheme'
 import { todayKey } from './lib/date'
@@ -12,12 +15,13 @@ import { useAppData } from './store/context'
 import type { View } from './types'
 
 function Workspace() {
-  const [view, setView] = useState<View>('todos')
+  const [view, setView] = useState<View>('today')
   const [cloudOpen, setCloudOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const { data } = useAppData()
 
   const today = todayKey()
+  const month = today.slice(0, 7)
   const todayProgress = data.habits.length
     ? Math.round(
       (data.habits.filter((habit) => habit.completedDates.includes(today)).length / data.habits.length) * 100,
@@ -32,6 +36,8 @@ function Workspace() {
         activeTodos={data.todos.filter((todo) => !todo.done).length}
         habitCount={data.habits.length}
         blocksToday={data.timeBlocks.filter((block) => block.date === today).length}
+        eventsToday={data.events.filter((event) => event.date === today).length}
+        transactionsThisMonth={data.transactions.filter((item) => item.date.startsWith(month)).length}
         todayProgress={todayProgress}
       />
       <main className="main">
@@ -43,9 +49,12 @@ function Workspace() {
             onCloudClick={() => setCloudOpen(true)}
           />
           <div className="main__content">
+            {view === 'today' && <TodayView onNavigate={setView} />}
             {view === 'todos' && <TodosView />}
             {view === 'habits' && <HabitsView />}
             {view === 'time' && <TimeView />}
+            {view === 'calendar' && <CalendarView />}
+            {view === 'expenses' && <ExpenseView />}
           </div>
         </div>
       </main>

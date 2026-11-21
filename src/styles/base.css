@@ -272,6 +272,10 @@ button:disabled {
   margin-top: 42px;
 }
 
+.sidebar__section + .sidebar__section {
+  margin-top: 22px;
+}
+
 .sidebar__label {
   padding: 0 12px;
   margin-bottom: 10px;
@@ -407,6 +411,27 @@ button:disabled {
 
 .main__content {
   margin-top: 30px;
+}
+
+.main__content > * {
+  animation: view-in 260ms ease both;
+}
+
+@keyframes view-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main__content > * {
+    animation: none;
+  }
 }
 
 /* ---------- Header ---------- */
@@ -665,6 +690,39 @@ button:disabled {
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
+textarea.field__input {
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat-card,
+.card {
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.stat-card:hover,
+.card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .card {
+    transition: none;
+  }
+
+  .stat-card:hover,
+  .card:hover {
+    transform: none;
+  }
+}
+
 /* ---------- Shared surfaces ---------- */
 
 .view-stack {
@@ -694,6 +752,15 @@ button:disabled {
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 20px;
+}
+
+.card__eyebrow {
+  margin-bottom: 5px;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .card__title {

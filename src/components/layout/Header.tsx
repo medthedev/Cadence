@@ -13,6 +13,11 @@ interface HeaderProps {
 }
 
 const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string }> = {
+  today: {
+    eyebrow: 'Overview / Today',
+    title: 'Today',
+    subtitle: 'A clear view of what matters right now.',
+  },
   todos: {
     eyebrow: 'Workspace / Tasks',
     title: 'Tasks',
@@ -27,6 +32,16 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
     eyebrow: 'Workspace / Time',
     title: 'Time',
     subtitle: 'Plan your day, then protect your focus.',
+  },
+  calendar: {
+    eyebrow: 'Life / Calendar',
+    title: 'Calendar',
+    subtitle: 'Make room for the people and plans that matter.',
+  },
+  expenses: {
+    eyebrow: 'Life / Expenses',
+    title: 'Expenses',
+    subtitle: 'Know where your money goes, without the spreadsheet.',
   },
 }
 
