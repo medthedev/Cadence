@@ -5,7 +5,7 @@ const STORAGE_KEY = 'freetodo.theme.v1'
 
 function isTheme(value: unknown): value is Theme {
   return value === 'github-light' || value === 'github-dark'
-    || value === 'equicord' || value === 'mono-glass'
+    || value === 'equicord' || value === 'mono'
 }
 
 function getInitialTheme(): Theme {

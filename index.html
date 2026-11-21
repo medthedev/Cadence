@@ -11,7 +11,7 @@
       try {
         var saved = localStorage.getItem('freetodo.theme.v1');
         var theme = saved === 'github-light' || saved === 'github-dark'
-          || saved === 'equicord' || saved === 'mono-glass'
+          || saved === 'equicord' || saved === 'mono'
           ? saved
           : (matchMedia('(prefers-color-scheme: dark)').matches ? 'github-dark' : 'github-light');
         document.documentElement.dataset.theme = theme;

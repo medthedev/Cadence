@@ -32,10 +32,10 @@ const THEME_OPTIONS: Array<{
     swatches: ['#1e1f22', '#313338', '#7c5cff'],
   },
   {
-    id: 'mono-glass',
-    label: 'Mono Glass',
-    description: 'Black, white and translucent',
-    swatches: ['#000000', '#ffffff', '#8a8a8a'],
+    id: 'mono',
+    label: 'Mono',
+    description: 'Black and white, medrinnn.dev style',
+    swatches: ['#0a0a0a', '#171717', '#fafafa'],
   },
 ]
 
