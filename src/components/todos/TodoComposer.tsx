@@ -16,12 +16,14 @@ export function TodoComposer() {
   const { dispatch } = useAppData()
   const [title, setTitle] = useState('')
   const [priority, setPriority] = useState<Priority>('medium')
+  const [estimate, setEstimate] = useState('')
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const trimmed = title.trim()
     if (!trimmed) return
 
+    const minutes = Number.parseInt(estimate, 10)
     dispatch({
       type: 'todo/add',
       todo: {
@@ -30,9 +32,11 @@ export function TodoComposer() {
         done: false,
         priority,
         createdAt: todayKey(),
+        estimatedMinutes: Number.isFinite(minutes) && minutes > 0 ? minutes : undefined,
       },
     })
     setTitle('')
+    setEstimate('')
   }
 
   return (
@@ -69,6 +73,19 @@ export function TodoComposer() {
             </button>
           ))}
         </div>
+
+        <label className="estimate-field">
+          <Icon name="clock" size={14} />
+          <input
+            type="number"
+            min={1}
+            max={600}
+            value={estimate}
+            onChange={(event) => setEstimate(event.target.value)}
+            placeholder="Est. minutes"
+            aria-label="Estimated minutes (optional)"
+          />
+        </label>
       </div>
     </form>
   )

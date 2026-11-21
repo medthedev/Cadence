@@ -65,6 +65,14 @@ export function TodoItem({ todo }: TodoItemProps) {
           <span className="todo-item__date">
             {todo.createdAt === todayKey() ? 'Added today' : `Added ${formatDate(todo.createdAt)}`}
           </span>
+          {(todo.estimatedMinutes || todo.loggedMinutes) && (
+            <span className="todo-item__time">
+              <Icon name="clock" size={12} />
+              {todo.loggedMinutes ? `${todo.loggedMinutes}m logged` : ''}
+              {todo.loggedMinutes && todo.estimatedMinutes ? ' / ' : ''}
+              {todo.estimatedMinutes ? `${todo.estimatedMinutes}m est` : ''}
+            </span>
+          )}
         </div>
       </div>
 

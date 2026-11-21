@@ -7,16 +7,18 @@ interface SidebarProps {
   onViewChange: (view: View) => void
   activeTodos: number
   habitCount: number
+  blocksToday: number
   todayProgress: number
 }
 
 const RING_RADIUS = 22
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS
 
-export function Sidebar({ view, onViewChange, activeTodos, habitCount, todayProgress }: SidebarProps) {
+export function Sidebar({ view, onViewChange, activeTodos, habitCount, blocksToday, todayProgress }: SidebarProps) {
   const navItems: Array<{ id: View; label: string; icon: IconName; count: number }> = [
     { id: 'todos', label: 'Tasks', icon: 'list', count: activeTodos },
     { id: 'habits', label: 'Habits', icon: 'grid', count: habitCount },
+    { id: 'time', label: 'Time', icon: 'clock', count: blocksToday },
   ]
 
   return (

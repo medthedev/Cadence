@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { HabitsView } from './components/habits/HabitsView'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
+import { TimeView } from './components/time/TimeView'
 import { TodosView } from './components/todos/TodosView'
 import { useTheme } from './hooks/useTheme'
 import { todayKey } from './lib/date'
@@ -28,13 +29,16 @@ function Workspace() {
         onViewChange={setView}
         activeTodos={data.todos.filter((todo) => !todo.done).length}
         habitCount={data.habits.length}
+        blocksToday={data.timeBlocks.filter((block) => block.date === today).length}
         todayProgress={todayProgress}
       />
       <main className="main">
         <div className="main__inner">
           <Header view={view} theme={theme} onThemeChange={setTheme} />
           <div className="main__content">
-            {view === 'todos' ? <TodosView /> : <HabitsView />}
+            {view === 'todos' && <TodosView />}
+            {view === 'habits' && <HabitsView />}
+            {view === 'time' && <TimeView />}
           </div>
         </div>
       </main>
