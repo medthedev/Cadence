@@ -35,12 +35,10 @@ export type IconName =
   | 'receipt'
   | 'pie'
   | 'bell'
-  | 'note'
   | 'droplet'
   | 'tag'
   | 'chevronLeft'
   | 'chevronRight'
-  | 'users'
   | 'checklist'
 
 const ICON_PATHS: Record<IconName, ReactNode> = {
@@ -204,12 +202,6 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
       <path d="M10 21h4" />
     </>
   ),
-  note: (
-    <>
-      <rect x="4" y="3" width="16" height="18" rx="2" />
-      <path d="M8 8h8M8 12h8M8 16h5" />
-    </>
-  ),
   droplet: <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z" />,
   tag: (
     <>
@@ -219,14 +211,6 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
   ),
   chevronLeft: <polyline points="15 18 9 12 15 6" />,
   chevronRight: <polyline points="9 18 15 12 9 6" />,
-  users: (
-    <>
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </>
-  ),
   checklist: (
     <>
       <path d="m3 7 2 2 3-3M3 17l2 2 3-3" />

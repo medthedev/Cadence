@@ -1,4 +1,4 @@
-/* Shared surfaces for Goals, Journal, People and Lists. */
+/* Shared surfaces for Goals and Lists. */
 
 .life-composer {
   padding: 20px 22px 22px;
@@ -20,10 +20,6 @@
   flex: 0 0 auto;
 }
 
-.life-form .mini-field {
-  flex: 0 0 110px;
-}
-
 .life-form__note {
   margin-top: 10px;
 }
@@ -32,8 +28,7 @@
   margin-bottom: -4px;
 }
 
-.life-grid,
-.people-grid {
+.life-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
   gap: 14px;
@@ -95,18 +90,6 @@
   color: var(--text-muted);
   font-size: 11px;
   font-weight: 650;
-}
-
-.life-badge--warm {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.life-badge--danger {
-  border-color: var(--danger);
-  background: var(--danger-soft);
-  color: var(--danger);
 }
 
 .goal-card.is-complete {
@@ -180,79 +163,21 @@
   min-width: 0;
 }
 
-/* ---------- Journal ---------- */
-
-.date-nav {
+.template-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-}
-
-.date-nav__input {
-  width: 150px;
-}
-
-.mood-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.mood-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 11px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  background: var(--surface-subtle);
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 650;
-}
-
-.mood-button:hover {
-  border-color: var(--accent);
-}
-
-.mood-button--active {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--text);
-}
-
-.mood-button span {
-  font-size: 15px;
-}
-
-.journal-textarea {
-  min-height: 220px;
-  margin-top: 14px;
-  line-height: 1.65;
-}
-
-.journal-prompts {
+  gap: 7px;
   margin-top: 12px;
 }
 
-.journal-prompts__label,
 .template-row__label {
-  display: block;
-  margin-bottom: 7px;
+  width: 100%;
+  margin-bottom: 0;
   color: var(--text-muted);
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.journal-prompts__list,
-.template-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
 }
 
 .prompt-chip {
@@ -270,110 +195,8 @@
   color: var(--text);
 }
 
-.journal-editor__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.journal-timeline {
-  display: flex;
-  flex-direction: column;
-}
-
-.journal-entry {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px 8px;
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  text-align: left;
-}
-
-.journal-entry:last-child {
-  border-bottom: 0;
-}
-
-.journal-entry:hover,
-.journal-entry--active {
-  background: var(--surface-subtle);
-}
-
-.journal-entry__mood {
-  font-size: 20px;
-}
-
-.journal-entry__body {
-  flex: 1;
-  min-width: 0;
-}
-
-.journal-entry__date {
-  display: block;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.journal-entry__preview {
-  display: block;
-  overflow: hidden;
-  color: var(--text-muted);
-  font-size: 12px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* ---------- People ---------- */
-
-.person-identity {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.person-avatar {
-  display: grid;
-  place-items: center;
-  flex: 0 0 38px;
-  height: 38px;
-  border-radius: 11px;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 750;
-}
-
-.person-details {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.person-contact {
-  width: 100%;
-  margin-top: auto;
-}
-
-/* ---------- Lists ---------- */
-
-.template-row {
-  margin-top: 12px;
-}
-
-.template-row__label {
-  width: 100%;
-  margin-bottom: 0;
-}
-
 @media (max-width: 760px) {
-  .life-grid,
-  .people-grid {
+  .life-grid {
     grid-template-columns: 1fr;
   }
 
@@ -382,13 +205,8 @@
     align-items: stretch;
   }
 
-  .life-form > .field__input,
-  .life-form .mini-field {
+  .life-form > .field__input {
     flex: 1 1 auto;
-    width: 100%;
-  }
-
-  .date-nav {
     width: 100%;
   }
 }

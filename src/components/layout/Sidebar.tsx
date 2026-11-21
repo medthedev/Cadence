@@ -10,8 +10,6 @@ export interface SidebarCounts {
   eventsToday: number
   transactionsThisMonth: number
   activeGoals: number
-  journalThisMonth: number
-  dueFollowUps: number
   openListItems: number
 }
 
@@ -55,8 +53,6 @@ export function Sidebar({ view, onViewChange, counts, todayProgress }: SidebarPr
       items: [
         { id: 'calendar', label: 'Calendar', icon: 'calendar', count: counts.eventsToday },
         { id: 'expenses', label: 'Expenses', icon: 'wallet', count: counts.transactionsThisMonth },
-        { id: 'journal', label: 'Journal', icon: 'note', count: counts.journalThisMonth },
-        { id: 'people', label: 'People', icon: 'users', count: counts.dueFollowUps },
         { id: 'lists', label: 'Lists', icon: 'checklist', count: counts.openListItems },
       ],
     },

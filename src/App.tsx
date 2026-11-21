@@ -8,9 +8,7 @@ import { InsightsView } from './components/insights/InsightsView'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import type { SidebarCounts } from './components/layout/Sidebar'
-import { JournalView } from './components/journal/JournalView'
 import { ListsView } from './components/lists/ListsView'
-import { PeopleView } from './components/people/PeopleView'
 import { TimeView } from './components/time/TimeView'
 import { TodayView } from './components/today/TodayView'
 import { TodosView } from './components/todos/TodosView'
@@ -41,8 +39,6 @@ function Workspace() {
     eventsToday: data.events.filter((event) => event.date === today).length,
     transactionsThisMonth: data.transactions.filter((item) => item.date.startsWith(month)).length,
     activeGoals: data.goals.filter((goal) => !goal.completedAt).length,
-    journalThisMonth: data.journal.filter((entry) => entry.date.startsWith(month)).length,
-    dueFollowUps: data.people.filter((person) => person.nextContact && person.nextContact <= today).length,
     openListItems: data.lists.reduce(
       (total, list) => total + list.items.filter((item) => !item.done).length, 0,
     ),
@@ -73,8 +69,6 @@ function Workspace() {
             {view === 'goals' && <GoalsView />}
             {view === 'calendar' && <CalendarView />}
             {view === 'expenses' && <ExpenseView />}
-            {view === 'journal' && <JournalView />}
-            {view === 'people' && <PeopleView />}
             {view === 'lists' && <ListsView />}
           </div>
         </div>

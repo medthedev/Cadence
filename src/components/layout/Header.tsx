@@ -53,16 +53,6 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
     title: 'Expenses',
     subtitle: 'Know where your money goes, without the spreadsheet.',
   },
-  journal: {
-    eyebrow: 'Life / Journal',
-    title: 'Journal',
-    subtitle: 'A quiet place to notice the day.',
-  },
-  people: {
-    eyebrow: 'Life / People',
-    title: 'People',
-    subtitle: 'Keep the relationships you care about alive.',
-  },
   lists: {
     eyebrow: 'Life / Lists',
     title: 'Lists',
