@@ -2,9 +2,11 @@ import { useMemo, useState } from 'react'
 import { buildCalendar, todayKey } from '../../lib/date'
 import { createId } from '../../lib/id'
 import { useAppData } from '../../store/context'
+import type { HabitTemplate } from '../../data/habitLibrary'
 import { HabitDetail } from './HabitDetail'
 import { HabitDialog } from './HabitDialog'
 import type { HabitChanges } from './HabitDialog'
+import { HabitLibraryDialog } from './HabitLibraryDialog'
 import { HabitOverview } from './HabitOverview'
 import { HabitRail, OVERVIEW_ID } from './HabitRail'
 
@@ -14,6 +16,7 @@ export function HabitsView() {
   const { data, dispatch } = useAppData()
   const [selectedId, setSelectedId] = useState<string>(OVERVIEW_ID)
   const [dialog, setDialog] = useState<DialogState>(null)
+  const [libraryOpen, setLibraryOpen] = useState(false)
   const { weeks, monthLabels } = useMemo(() => buildCalendar(), [])
   const today = todayKey()
 
@@ -34,6 +37,25 @@ export function HabitsView() {
     setDialog(null)
   }
 
+  function handleAddFromLibrary(template: HabitTemplate) {
+    const id = createId()
+    dispatch({
+      type: 'habit/add',
+      habit: {
+        id,
+        name: template.name,
+        emoji: template.emoji,
+        color: template.color,
+        weeklyGoal: template.weeklyGoal,
+        createdAt: today,
+        completedDates: [],
+        source: template.category,
+      },
+    })
+    setSelectedId(id)
+    setLibraryOpen(false)
+  }
+
   return (
     <div className="habits-layout">
       <HabitRail
@@ -43,6 +65,7 @@ export function HabitsView() {
         onSelect={setSelectedId}
         onToggleToday={(id) => dispatch({ type: 'habit/toggleDate', id, date: today })}
         onAdd={() => setDialog({ mode: 'create' })}
+        onBrowseLibrary={() => setLibraryOpen(true)}
       />
 
       {selectedHabit ? (
@@ -66,6 +89,15 @@ export function HabitsView() {
           weeks={weeks}
           monthLabels={monthLabels}
           onSelectHabit={setSelectedId}
+          onBrowseLibrary={() => setLibraryOpen(true)}
+        />
+      )}
+
+      {libraryOpen && (
+        <HabitLibraryDialog
+          addedNames={data.habits.map((habit) => habit.name)}
+          onClose={() => setLibraryOpen(false)}
+          onAdd={handleAddFromLibrary}
         />
       )}
 

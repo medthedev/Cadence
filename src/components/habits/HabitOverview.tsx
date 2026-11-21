@@ -1,6 +1,7 @@
 import type { CalendarWeek, MonthLabel } from '../../lib/date'
 import { activityLevel, completionRate, currentStreak } from '../../lib/stats'
 import type { Habit } from '../../types'
+import { EmptyState } from '../common/EmptyState'
 import { Icon } from '../common/Icon'
 import { StatCard } from '../common/StatCard'
 import { ContributionGrid } from './ContributionGrid'
@@ -11,15 +12,36 @@ interface HabitOverviewProps {
   weeks: CalendarWeek[]
   monthLabels: MonthLabel[]
   onSelectHabit: (id: string) => void
+  onBrowseLibrary: () => void
 }
 
-export function HabitOverview({ habits, today, weeks, monthLabels, onSelectHabit }: HabitOverviewProps) {
+export function HabitOverview({ habits, today, weeks, monthLabels, onSelectHabit, onBrowseLibrary }: HabitOverviewProps) {
   const doneToday = habits.filter((habit) => habit.completedDates.includes(today)).length
   const bestStreak = Math.max(0, ...habits.map((habit) => currentStreak(habit.completedDates)))
   const totalCheckIns = habits.reduce((total, habit) => total + habit.completedDates.length, 0)
   const consistency = habits.length
     ? Math.round(habits.reduce((total, habit) => total + completionRate(habit.completedDates, habit.createdAt, 30), 0) / habits.length)
     : 0
+
+  if (habits.length === 0) {
+    return (
+      <section className="habit-detail">
+        <div className="card">
+          <EmptyState
+            icon="book"
+            title="Start your first habit"
+            description="Browse the library for 100+ ideas, including prayer, reading, fitness and more."
+            action={
+              <button type="button" className="button button--primary" onClick={onBrowseLibrary}>
+                <Icon name="book" size={16} />
+                Browse habit library
+              </button>
+            }
+          />
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="habit-detail">

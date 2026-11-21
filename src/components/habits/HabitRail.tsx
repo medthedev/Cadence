@@ -11,6 +11,7 @@ interface HabitRailProps {
   onSelect: (id: string) => void
   onToggleToday: (id: string) => void
   onAdd: () => void
+  onBrowseLibrary: () => void
 }
 
 export function HabitRail({
@@ -20,6 +21,7 @@ export function HabitRail({
   onSelect,
   onToggleToday,
   onAdd,
+  onBrowseLibrary,
 }: HabitRailProps) {
   return (
     <aside className="habit-rail">
@@ -81,10 +83,16 @@ export function HabitRail({
         })}
       </div>
 
-      <button type="button" className="button button--ghost habit-rail__add" onClick={onAdd}>
-        <Icon name="plus" size={16} />
-        New habit
-      </button>
+      <div className="habit-rail__footer-actions">
+        <button type="button" className="button button--ghost habit-rail__add" onClick={onAdd}>
+          <Icon name="plus" size={16} />
+          New habit
+        </button>
+        <button type="button" className="button button--ghost habit-rail__add" onClick={onBrowseLibrary}>
+          <Icon name="book" size={16} />
+          Browse library
+        </button>
+      </div>
     </aside>
   )
 }
