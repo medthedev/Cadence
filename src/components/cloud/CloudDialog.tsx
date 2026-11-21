@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { generateSyncCode } from '../../lib/cloud'
+import { describeConnectionUrl, generateSyncCode } from '../../lib/cloud'
 import { useAppData } from '../../store/context'
 import type { SyncStatus } from '../../store/context'
 import { Icon } from '../common/Icon'
@@ -19,8 +19,8 @@ const STATUS_COPY: Record<SyncStatus, { title: string; description: string }> = 
 
 export function CloudDialog({ onClose }: CloudDialogProps) {
   const { sync, syncActions } = useAppData()
-  const [serverUrl, setServerUrl] = useState(
-    sync.config?.serverUrl ?? import.meta.env.VITE_CLOUD_URL ?? window.location.origin,
+  const [connectionUrl, setConnectionUrl] = useState(
+    sync.config?.connectionUrl ?? import.meta.env.VITE_SUPABASE_URL ?? '',
   )
   const [code, setCode] = useState(sync.config?.code ?? generateSyncCode())
   const [busy, setBusy] = useState(false)
@@ -38,7 +38,7 @@ export function CloudDialog({ onClose }: CloudDialogProps) {
     event.preventDefault()
     if (!code.trim()) return
     setBusy(true)
-    const connected = await syncActions.connect(serverUrl, code)
+    const connected = await syncActions.connect(connectionUrl, code)
     setBusy(false)
     if (connected) setEditing(false)
   }
@@ -76,7 +76,7 @@ export function CloudDialog({ onClose }: CloudDialogProps) {
             <dl>
               <div>
                 <dt>Server</dt>
-                <dd>{sync.config.serverUrl || window.location.origin}</dd>
+                <dd>{describeConnectionUrl(sync.config.connectionUrl)}</dd>
               </div>
               <div>
                 <dt>Sync code</dt>
@@ -117,13 +117,13 @@ export function CloudDialog({ onClose }: CloudDialogProps) {
         ) : (
           <form className="modal__form cloud-form" onSubmit={(event) => void handleConnect(event)}>
             <label className="field">
-              <span className="field__label">Server URL</span>
+              <span className="field__label">Supabase connection URL</span>
               <input
                 className="field__input"
-                value={serverUrl}
-                onChange={(event) => setServerUrl(event.target.value)}
-                placeholder="http://localhost:8787"
-                aria-label="Cloud server URL"
+                value={connectionUrl}
+                onChange={(event) => setConnectionUrl(event.target.value)}
+                placeholder="https://your-project.supabase.co?key=YOUR_ANON_KEY"
+                aria-label="Supabase connection URL"
               />
             </label>
             <label className="field">
@@ -149,8 +149,8 @@ export function CloudDialog({ onClose }: CloudDialogProps) {
               </div>
             </label>
             <p className="cloud-hint">
-              Run the included cloud server with <code>bun run cloud</code>, or point this at your own
-              deployment. Same code = same workspace.
+              Run <code>supabase/schema.sql</code> in your SQL editor, then paste your project URL with
+              <code>?key=YOUR_ANON_KEY</code>. Same code = same workspace.
             </p>
             <div className="modal__footer">
               {editing && sync.config && (

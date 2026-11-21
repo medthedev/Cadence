@@ -14,7 +14,7 @@ export interface SyncState {
 }
 
 export interface SyncActions {
-  connect: (serverUrl: string, code: string) => Promise<boolean>
+  connect: (connectionUrl: string, code: string) => Promise<boolean>
   disconnect: () => void
   syncNow: () => Promise<void>
 }

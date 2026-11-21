@@ -2,7 +2,7 @@ import type { AppData } from '../types'
 import { isAppData } from './storage'
 
 export interface CloudConfig {
-  serverUrl: string
+  connectionUrl: string
   code: string
   revision: number
 }
@@ -43,15 +43,53 @@ export function generateSyncCode(): string {
   return Array.from(bytes, (byte) => CODE_ALPHABET[byte % CODE_ALPHABET.length]).join('')
 }
 
+function isSupabaseUrl(value: string): boolean {
+  return /^https:\/\/[\w-]+\.supabase\.co\/?$/i.test(value)
+}
+
+/** Accepts `https://project.supabase.co?key=ANON_KEY` as one connection string. */
+export function parseConnectionUrl(value: string): { origin: string; apiKey: string } {
+  let url: URL
+  try {
+    url = new URL(value.trim())
+  } catch {
+    throw new Error('Enter a valid Supabase connection URL')
+  }
+  if (url.protocol !== 'https:' || !isSupabaseUrl(url.origin)) {
+    throw new Error('Use your Supabase project URL (https://<project>.supabase.co)')
+  }
+
+  const apiKey = url.searchParams.get('key')?.trim() || import.meta.env.VITE_SUPABASE_ANON_KEY
+  if (!apiKey) throw new Error('Add your anon key to the URL as ?key=...')
+
+  return { origin: url.origin, apiKey }
+}
+
+/** Hide the key when showing the connection in the UI. */
+export function describeConnectionUrl(value: string): string {
+  try {
+    const url = new URL(value.trim())
+    return url.searchParams.has('key') ? `${url.origin}?key=••••••` : url.origin
+  } catch {
+    return value
+  }
+}
+
 export function loadCloudConfig(): CloudConfig | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const parsed: unknown = JSON.parse(raw)
     if (!isRecord(parsed)) return null
-    if (typeof parsed.serverUrl !== 'string' || typeof parsed.code !== 'string') return null
+
+    // Older builds stored the self-hosted server URL under `serverUrl`.
+    const connectionUrl = typeof parsed.connectionUrl === 'string'
+      ? parsed.connectionUrl
+      : typeof parsed.serverUrl === 'string' ? parsed.serverUrl : ''
+    if (!connectionUrl || typeof parsed.code !== 'string') return null
+
     return {
-      serverUrl: parsed.serverUrl,
+      connectionUrl,
       code: parsed.code,
       revision: typeof parsed.revision === 'number' ? parsed.revision : 0,
     }
@@ -69,42 +107,42 @@ export function saveCloudConfig(config: CloudConfig | null): void {
   }
 }
 
-function endpoint(config: CloudConfig): string {
-  const base = config.serverUrl.trim().replace(/\/$/, '')
-  return `${base}/api/v1/state/${encodeURIComponent(config.code)}`
+async function rpc<T>(connectionUrl: string, functionName: string, args: Record<string, unknown>): Promise<T> {
+  const { origin, apiKey } = parseConnectionUrl(connectionUrl)
+  const response = await fetch(`${origin}/rest/v1/rpc/${functionName}`, {
+    method: 'POST',
+    headers: {
+      apikey: apiKey,
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(args),
+  })
+
+  if (!response.ok) throw new Error(`Supabase responded with ${response.status}`)
+  return await response.json() as T
 }
 
 export async function cloudPull(config: CloudConfig): Promise<CloudRecord | null> {
-  const response = await fetch(endpoint(config), {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-  })
-
-  if (response.status === 404) return null
-  if (!response.ok) throw new Error(`Cloud server responded with ${response.status}`)
-
-  const body: unknown = await response.json()
-  if (!isCloudRecord(body)) throw new Error('Unexpected response from cloud server')
+  const body = await rpc<unknown>(config.connectionUrl, 'sync_pull', { p_code: config.code })
+  if (body === null) return null
+  if (!isCloudRecord(body)) throw new Error('Unexpected response from Supabase')
   return body
 }
 
 export async function cloudPush(config: CloudConfig, data: AppData): Promise<number> {
-  const response = await fetch(endpoint(config), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data, revision: config.revision }),
+  const body = await rpc<unknown>(config.connectionUrl, 'sync_push', {
+    p_code: config.code,
+    p_data: data,
+    p_revision: config.revision,
   })
 
-  if (response.status === 409) {
-    const body: unknown = await response.json()
-    if (isRecord(body) && isCloudRecord(body.remote)) throw new CloudConflictError(body.remote)
-    throw new Error('Cloud data is out of sync')
+  if (!isRecord(body)) throw new Error('Unexpected response from Supabase')
+  if (body.conflict === true) {
+    if (isCloudRecord(body.remote)) throw new CloudConflictError(body.remote)
+    throw new Error('Supabase data is out of sync')
   }
-  if (!response.ok) throw new Error(`Cloud server responded with ${response.status}`)
-
-  const body: unknown = await response.json()
-  if (!isRecord(body) || typeof body.revision !== 'number') {
-    throw new Error('Unexpected response from cloud server')
-  }
+  if (typeof body.revision !== 'number') throw new Error('Unexpected response from Supabase')
   return body.revision
 }

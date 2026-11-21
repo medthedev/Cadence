@@ -23,5 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Cloud sync server data
-server/.data/
+# Local environment files
+.env
+.env.*
+!.env.example

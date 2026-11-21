@@ -123,9 +123,9 @@ export function AppStoreProvider({ children }: AppStoreProviderProps) {
     return () => window.clearTimeout(timeout)
   }, [data, ready, sync.status, applyRemote])
 
-  const connect = useCallback(async (serverUrl: string, code: string) => {
+  const connect = useCallback(async (connectionUrl: string, code: string) => {
     const config: CloudConfig = {
-      serverUrl: serverUrl.trim(),
+      connectionUrl: connectionUrl.trim(),
       code: code.trim().toUpperCase(),
       revision: 0,
     }
