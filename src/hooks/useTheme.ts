@@ -3,15 +3,19 @@ import type { Theme } from '../types'
 
 const STORAGE_KEY = 'freetodo.theme.v1'
 
+function isTheme(value: unknown): value is Theme {
+  return value === 'github-light' || value === 'github-dark' || value === 'equicord'
+}
+
 function getInitialTheme(): Theme {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved === 'light' || saved === 'dark') return saved
+    const saved: unknown = localStorage.getItem(STORAGE_KEY)
+    if (isTheme(saved)) return saved
   } catch {
     // Fall through to the system preference.
   }
 
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'github-dark' : 'github-light'
 }
 
 export function useTheme() {
@@ -26,8 +30,5 @@ export function useTheme() {
     }
   }, [theme])
 
-  return {
-    theme,
-    toggleTheme: () => setTheme((current) => current === 'light' ? 'dark' : 'light'),
-  }
+  return { theme, setTheme }
 }

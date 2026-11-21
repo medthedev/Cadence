@@ -1,11 +1,12 @@
 import { formatLongDate } from '../../lib/date'
 import type { Theme, View } from '../../types'
 import { Icon } from '../common/Icon'
+import { ThemePicker } from './ThemePicker'
 
 interface HeaderProps {
   view: View
   theme: Theme
-  onToggleTheme: () => void
+  onThemeChange: (theme: Theme) => void
 }
 
 const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string }> = {
@@ -26,7 +27,7 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
   },
 }
 
-export function Header({ view, theme, onToggleTheme }: HeaderProps) {
+export function Header({ view, theme, onThemeChange }: HeaderProps) {
   const copy = VIEW_COPY[view]
 
   return (
@@ -42,15 +43,7 @@ export function Header({ view, theme, onToggleTheme }: HeaderProps) {
           <Icon name="sparkles" size={15} />
           <span>{formatLongDate(new Date())}</span>
         </div>
-        <button
-          type="button"
-          className="icon-button icon-button--bordered"
-          onClick={onToggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          <Icon name={theme === 'light' ? 'moon' : 'sun'} size={18} />
-        </button>
+        <ThemePicker theme={theme} onChange={onThemeChange} />
       </div>
     </header>
   )

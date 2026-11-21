@@ -17,6 +17,19 @@ export type IconName =
   | 'arrowRight'
   | 'trophy'
   | 'sparkles'
+  | 'palette'
+  | 'clock'
+  | 'play'
+  | 'pause'
+  | 'rotate'
+  | 'skip'
+  | 'book'
+  | 'cloud'
+  | 'cloudOff'
+  | 'link'
+  | 'unlink'
+  | 'timer'
+  | 'calendar'
 
 const ICON_PATHS: Record<IconName, ReactNode> = {
   check: <polyline points="20 6 9 17 4 12" />,
@@ -89,6 +102,68 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
     <>
       <path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Z" />
       <path d="m19 17 .7 1.8L21.5 19.5l-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7L19 17Z" />
+    </>
+  ),
+  palette: (
+    <>
+      <path d="M12 3a9 9 0 0 0 0 18h1.5a2.5 2.5 0 0 0 0-5H12a2 2 0 0 1 0-4h6a3 3 0 0 0 3-3A6 6 0 0 0 12 3Z" />
+      <circle cx="7.5" cy="11" r="1" />
+      <circle cx="10" cy="7" r="1" />
+      <circle cx="15" cy="7" r="1" />
+    </>
+  ),
+  clock: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
+  play: <path d="m8 5 11 7-11 7V5Z" />,
+  pause: <path d="M9 5v14M15 5v14" />,
+  rotate: (
+    <>
+      <path d="M3 12a9 9 0 1 0 3-6.7" />
+      <path d="M3 4v5h5" />
+    </>
+  ),
+  skip: <path d="m6 5 10 7-10 7V5ZM18 5v14" />,
+  book: (
+    <>
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+    </>
+  ),
+  cloud: <path d="M7 18h10a4 4 0 0 0 .6-8A6 6 0 0 0 6 9.5 4.3 4.3 0 0 0 7 18Z" />,
+  cloudOff: (
+    <>
+      <path d="M7 18h10a4 4 0 0 0 3.6-5.8" />
+      <path d="M6 9.5A4.3 4.3 0 0 0 5 12" />
+      <path d="M3 3l18 18" />
+    </>
+  ),
+  link: (
+    <>
+      <path d="M10 13a5 5 0 0 0 7.5.5l2-2A5 5 0 0 0 12.5 4l-1 1" />
+      <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2A5 5 0 0 0 11.5 20l1-1" />
+    </>
+  ),
+  unlink: (
+    <>
+      <path d="M10 13a5 5 0 0 0 7.5.5l2-2A5 5 0 0 0 12.5 4l-1 1" />
+      <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2A5 5 0 0 0 11.5 20l1-1" />
+      <path d="M3 3l18 18" />
+    </>
+  ),
+  timer: (
+    <>
+      <circle cx="12" cy="13" r="8" />
+      <path d="M12 9v4l2 2M9 2h6" />
+    </>
+  ),
+  calendar: (
+    <>
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M8 3v4M16 3v4M3 10h18" />
     </>
   ),
 }

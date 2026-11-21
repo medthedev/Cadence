@@ -7,6 +7,17 @@
     <meta name="description" content="FreeTodo — a calm task list and habit tracker with a GitHub-style contribution grid." />
     <meta name="theme-color" content="#10a37f" />
     <title>FreeTodo — Tasks & Habits</title>
+    <script>
+      try {
+        var saved = localStorage.getItem('freetodo.theme.v1');
+        var theme = saved === 'github-light' || saved === 'github-dark' || saved === 'equicord'
+          ? saved
+          : (matchMedia('(prefers-color-scheme: dark)').matches ? 'github-dark' : 'github-light');
+        document.documentElement.dataset.theme = theme;
+      } catch (error) {
+        document.documentElement.dataset.theme = 'github-light';
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

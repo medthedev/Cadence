@@ -145,17 +145,20 @@
   color: #b33f5a;
 }
 
-:root[data-theme='dark'] .priority-chip--low.priority-chip--selected {
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .priority-chip--low.priority-chip--selected {
   background: #17323f;
   color: #8fd0f0;
 }
 
-:root[data-theme='dark'] .priority-chip--medium.priority-chip--selected {
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .priority-chip--medium.priority-chip--selected {
   background: #3a2c19;
   color: #eabb62;
 }
 
-:root[data-theme='dark'] .priority-chip--high.priority-chip--selected {
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .priority-chip--high.priority-chip--selected {
   background: #3d232c;
   color: #f0a1b4;
 }
@@ -334,17 +337,20 @@
   color: #b33f5a;
 }
 
-:root[data-theme='dark'] .priority-badge--low {
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .priority-badge--low {
   background: #17323f;
   color: #8fd0f0;
 }
 
-:root[data-theme='dark'] .priority-badge--medium {
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .priority-badge--medium {
   background: #3a2c19;
   color: #eabb62;
 }
 
-:root[data-theme='dark'] .priority-badge--high {
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .priority-badge--high {
   background: #3d232c;
   color: #f0a1b4;
 }

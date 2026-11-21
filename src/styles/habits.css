@@ -128,10 +128,14 @@
 .habit-avatar--amber { background: #fdf3e0; }
 .habit-avatar--rose { background: #fdecef; }
 
-:root[data-theme='dark'] .habit-avatar--sky { background: #17323f; }
-:root[data-theme='dark'] .habit-avatar--violet { background: #2b2440; }
-:root[data-theme='dark'] .habit-avatar--amber { background: #3a2c19; }
-:root[data-theme='dark'] .habit-avatar--rose { background: #3d232c; }
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .habit-avatar--sky { background: #17323f; }
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .habit-avatar--violet { background: #2b2440; }
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .habit-avatar--amber { background: #3a2c19; }
+:root[data-theme='github-dark'],
+:root[data-theme='equicord'] .habit-avatar--rose { background: #3d232c; }
 
 .habit-check {
   display: grid;

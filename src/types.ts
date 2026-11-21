@@ -56,4 +56,4 @@ export interface AppData {
 
 export type View = 'todos' | 'habits' | 'time'
 
-export type Theme = 'light' | 'dark'
+export type Theme = 'github-light' | 'github-dark' | 'equicord'

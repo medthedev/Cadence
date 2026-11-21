@@ -11,7 +11,7 @@ import type { View } from './types'
 
 function Workspace() {
   const [view, setView] = useState<View>('todos')
-  const { theme, toggleTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const { data } = useAppData()
 
   const today = todayKey()
@@ -32,7 +32,7 @@ function Workspace() {
       />
       <main className="main">
         <div className="main__inner">
-          <Header view={view} theme={theme} onToggleTheme={toggleTheme} />
+          <Header view={view} theme={theme} onThemeChange={setTheme} />
           <div className="main__content">
             {view === 'todos' ? <TodosView /> : <HabitsView />}
           </div>
