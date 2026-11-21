@@ -271,6 +271,48 @@
   color: var(--accent);
 }
 
+.life-today-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.life-today-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+
+.life-today-row:hover {
+  background: var(--surface-hover);
+}
+
+.life-today-row > svg {
+  color: var(--text-muted);
+}
+
+.life-today-row span {
+  flex: 1;
+  font-size: 12px;
+}
+
+.life-today-row strong {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.life-today-card > .button {
+  width: 100%;
+  margin-top: 10px;
+}
+
 @media (max-width: 1200px) {
   .stat-grid--today {
     grid-template-columns: repeat(2, minmax(0, 1fr));

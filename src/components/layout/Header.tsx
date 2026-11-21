@@ -38,6 +38,11 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
     title: 'Time',
     subtitle: 'Plan your day, then protect your focus.',
   },
+  goals: {
+    eyebrow: 'Workspace / Goals',
+    title: 'Goals',
+    subtitle: 'Turn the big things into small, steady steps.',
+  },
   calendar: {
     eyebrow: 'Life / Calendar',
     title: 'Calendar',
@@ -47,6 +52,21 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
     eyebrow: 'Life / Expenses',
     title: 'Expenses',
     subtitle: 'Know where your money goes, without the spreadsheet.',
+  },
+  journal: {
+    eyebrow: 'Life / Journal',
+    title: 'Journal',
+    subtitle: 'A quiet place to notice the day.',
+  },
+  people: {
+    eyebrow: 'Life / People',
+    title: 'People',
+    subtitle: 'Keep the relationships you care about alive.',
+  },
+  lists: {
+    eyebrow: 'Life / Lists',
+    title: 'Lists',
+    subtitle: 'Shopping, packing, reading — whatever needs remembering.',
   },
 }
 

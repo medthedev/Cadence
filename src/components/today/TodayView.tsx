@@ -40,6 +40,12 @@ export function TodayView({ onNavigate }: TodayViewProps) {
     .slice(0, 4)
   const recent = data.transactions.slice(0, 4)
   const rhythm = data.habits.length ? Math.round((habitsDone / data.habits.length) * 100) : 0
+  const activeGoals = data.goals.filter((goal) => !goal.completedAt).length
+  const dueFollowUps = data.people.filter((person) => person.nextContact && person.nextContact <= today).length
+  const openListItems = data.lists.reduce(
+    (total, list) => total + list.items.filter((item) => !item.done).length, 0,
+  )
+  const journalToday = data.journal.some((entry) => entry.date === today)
 
   const dueTasks = data.todos
     .filter((todo) => !todo.done && todo.dueDate && todo.dueDate <= today)
@@ -77,6 +83,10 @@ export function TodayView({ onNavigate }: TodayViewProps) {
             <button type="button" className="button button--ghost" onClick={() => onNavigate('expenses')}>
               <Icon name="wallet" size={16} />
               Log spending
+            </button>
+            <button type="button" className="button button--ghost" onClick={() => onNavigate('journal')}>
+              <Icon name="note" size={16} />
+              Journal
             </button>
             <button type="button" className="button button--ghost" onClick={() => onNavigate('insights')}>
               <Icon name="chart" size={16} />
@@ -280,6 +290,36 @@ export function TodayView({ onNavigate }: TodayViewProps) {
             ) : (
               <p className="sessions-empty">No transactions recorded yet.</p>
             )}
+          </section>
+
+          <section className="card life-today-card">
+            <div className="card__header">
+              <div>
+                <h3 className="card__title">Life beyond work</h3>
+                <p className="card__description">The quieter things worth keeping up with.</p>
+              </div>
+            </div>
+            <div className="life-today-list">
+              <button type="button" className="life-today-row" onClick={() => onNavigate('goals')}>
+                <Icon name="target" size={16} />
+                <span>Active goals</span>
+                <strong>{activeGoals}</strong>
+              </button>
+              <button type="button" className="life-today-row" onClick={() => onNavigate('people')}>
+                <Icon name="users" size={16} />
+                <span>Follow-ups due</span>
+                <strong>{dueFollowUps}</strong>
+              </button>
+              <button type="button" className="life-today-row" onClick={() => onNavigate('lists')}>
+                <Icon name="checklist" size={16} />
+                <span>Open list items</span>
+                <strong>{openListItems}</strong>
+              </button>
+            </div>
+            <button type="button" className="button button--ghost" onClick={() => onNavigate('journal')}>
+              <Icon name="note" size={15} />
+              {journalToday ? 'Continue today’s entry' : 'Write today’s entry'}
+            </button>
           </section>
 
           <section className="card pulse-card">

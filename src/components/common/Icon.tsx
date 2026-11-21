@@ -40,6 +40,8 @@ export type IconName =
   | 'tag'
   | 'chevronLeft'
   | 'chevronRight'
+  | 'users'
+  | 'checklist'
 
 const ICON_PATHS: Record<IconName, ReactNode> = {
   check: <polyline points="20 6 9 17 4 12" />,
@@ -217,6 +219,20 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
   ),
   chevronLeft: <polyline points="15 18 9 12 15 6" />,
   chevronRight: <polyline points="9 18 15 12 9 6" />,
+  users: (
+    <>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </>
+  ),
+  checklist: (
+    <>
+      <path d="m3 7 2 2 3-3M3 17l2 2 3-3" />
+      <path d="M11 8h10M11 18h10" />
+    </>
+  ),
 }
 
 interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {

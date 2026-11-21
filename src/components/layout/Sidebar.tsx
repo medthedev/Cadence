@@ -3,14 +3,22 @@ import { Icon } from '../common/Icon'
 import { Logo } from '../common/Logo'
 import type { IconName } from '../common/Icon'
 
-interface SidebarProps {
-  view: View
-  onViewChange: (view: View) => void
+export interface SidebarCounts {
   activeTodos: number
-  habitCount: number
+  habits: number
   blocksToday: number
   eventsToday: number
   transactionsThisMonth: number
+  activeGoals: number
+  journalThisMonth: number
+  dueFollowUps: number
+  openListItems: number
+}
+
+interface SidebarProps {
+  view: View
+  onViewChange: (view: View) => void
+  counts: SidebarCounts
   todayProgress: number
 }
 
@@ -24,10 +32,7 @@ interface NavItem {
 const RING_RADIUS = 22
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS
 
-export function Sidebar({
-  view, onViewChange, activeTodos, habitCount, blocksToday,
-  eventsToday, transactionsThisMonth, todayProgress,
-}: SidebarProps) {
+export function Sidebar({ view, onViewChange, counts, todayProgress }: SidebarProps) {
   const sections: Array<{ label: string; items: NavItem[] }> = [
     {
       label: 'Overview',
@@ -39,16 +44,20 @@ export function Sidebar({
     {
       label: 'Workspace',
       items: [
-        { id: 'todos', label: 'Tasks', icon: 'list', count: activeTodos },
-        { id: 'habits', label: 'Habits', icon: 'grid', count: habitCount },
-        { id: 'time', label: 'Time', icon: 'clock', count: blocksToday },
+        { id: 'todos', label: 'Tasks', icon: 'list', count: counts.activeTodos },
+        { id: 'habits', label: 'Habits', icon: 'grid', count: counts.habits },
+        { id: 'time', label: 'Time', icon: 'clock', count: counts.blocksToday },
+        { id: 'goals', label: 'Goals', icon: 'target', count: counts.activeGoals },
       ],
     },
     {
       label: 'Life',
       items: [
-        { id: 'calendar', label: 'Calendar', icon: 'calendar', count: eventsToday },
-        { id: 'expenses', label: 'Expenses', icon: 'wallet', count: transactionsThisMonth },
+        { id: 'calendar', label: 'Calendar', icon: 'calendar', count: counts.eventsToday },
+        { id: 'expenses', label: 'Expenses', icon: 'wallet', count: counts.transactionsThisMonth },
+        { id: 'journal', label: 'Journal', icon: 'note', count: counts.journalThisMonth },
+        { id: 'people', label: 'People', icon: 'users', count: counts.dueFollowUps },
+        { id: 'lists', label: 'Lists', icon: 'checklist', count: counts.openListItems },
       ],
     },
   ]

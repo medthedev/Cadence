@@ -1,0 +1,394 @@
+/* Shared surfaces for Goals, Journal, People and Lists. */
+
+.life-composer {
+  padding: 20px 22px 22px;
+}
+
+.life-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.life-form > .field__input {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.life-form > .button {
+  flex: 0 0 auto;
+}
+
+.life-form .mini-field {
+  flex: 0 0 110px;
+}
+
+.life-form__note {
+  margin-top: 10px;
+}
+
+.life-toolbar {
+  margin-bottom: -4px;
+}
+
+.life-grid,
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.life-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.life-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.life-card__actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+}
+
+.life-card__title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.life-card__text {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.life-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.life-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-start;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  background: var(--surface-subtle);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.life-badge--warm {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.life-badge--danger {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.goal-card.is-complete {
+  opacity: 0.7;
+}
+
+.milestone-list,
+.list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.milestone-row,
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 12px;
+}
+
+.milestone-row > span,
+.list-item > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.milestone-row .is-done,
+.list-item--done > span {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.milestone-check {
+  display: grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: #fff;
+}
+
+.milestone-check:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.milestone-check--done {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+:root[data-theme='mono'] .milestone-check--done {
+  color: #000000;
+}
+
+.milestone-add {
+  display: flex;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.milestone-add .field__input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---------- Journal ---------- */
+
+.date-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.date-nav__input {
+  width: 150px;
+}
+
+.mood-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.mood-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-subtle);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.mood-button:hover {
+  border-color: var(--accent);
+}
+
+.mood-button--active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.mood-button span {
+  font-size: 15px;
+}
+
+.journal-textarea {
+  min-height: 220px;
+  margin-top: 14px;
+  line-height: 1.65;
+}
+
+.journal-prompts {
+  margin-top: 12px;
+}
+
+.journal-prompts__label,
+.template-row__label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.journal-prompts__list,
+.template-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.prompt-chip {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.prompt-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.journal-editor__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.journal-timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.journal-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 8px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+}
+
+.journal-entry:last-child {
+  border-bottom: 0;
+}
+
+.journal-entry:hover,
+.journal-entry--active {
+  background: var(--surface-subtle);
+}
+
+.journal-entry__mood {
+  font-size: 20px;
+}
+
+.journal-entry__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.journal-entry__date {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.journal-entry__preview {
+  display: block;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- People ---------- */
+
+.person-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.person-avatar {
+  display: grid;
+  place-items: center;
+  flex: 0 0 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.person-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.person-contact {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* ---------- Lists ---------- */
+
+.template-row {
+  margin-top: 12px;
+}
+
+.template-row__label {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  .life-grid,
+  .people-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .life-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .life-form > .field__input,
+  .life-form .mini-field {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .date-nav {
+    width: 100%;
+  }
+}

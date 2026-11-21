@@ -2,10 +2,15 @@ import { useState } from 'react'
 import { CalendarView } from './components/calendar/CalendarView'
 import { CloudDialog } from './components/cloud/CloudDialog'
 import { ExpenseView } from './components/expenses/ExpenseView'
+import { GoalsView } from './components/goals/GoalsView'
 import { HabitsView } from './components/habits/HabitsView'
 import { InsightsView } from './components/insights/InsightsView'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
+import type { SidebarCounts } from './components/layout/Sidebar'
+import { JournalView } from './components/journal/JournalView'
+import { ListsView } from './components/lists/ListsView'
+import { PeopleView } from './components/people/PeopleView'
 import { TimeView } from './components/time/TimeView'
 import { TodayView } from './components/today/TodayView'
 import { TodosView } from './components/todos/TodosView'
@@ -29,16 +34,26 @@ function Workspace() {
     )
     : 0
 
+  const counts: SidebarCounts = {
+    activeTodos: data.todos.filter((todo) => !todo.done).length,
+    habits: data.habits.length,
+    blocksToday: data.timeBlocks.filter((block) => block.date === today).length,
+    eventsToday: data.events.filter((event) => event.date === today).length,
+    transactionsThisMonth: data.transactions.filter((item) => item.date.startsWith(month)).length,
+    activeGoals: data.goals.filter((goal) => !goal.completedAt).length,
+    journalThisMonth: data.journal.filter((entry) => entry.date.startsWith(month)).length,
+    dueFollowUps: data.people.filter((person) => person.nextContact && person.nextContact <= today).length,
+    openListItems: data.lists.reduce(
+      (total, list) => total + list.items.filter((item) => !item.done).length, 0,
+    ),
+  }
+
   return (
     <div className="app-shell">
       <Sidebar
         view={view}
         onViewChange={setView}
-        activeTodos={data.todos.filter((todo) => !todo.done).length}
-        habitCount={data.habits.length}
-        blocksToday={data.timeBlocks.filter((block) => block.date === today).length}
-        eventsToday={data.events.filter((event) => event.date === today).length}
-        transactionsThisMonth={data.transactions.filter((item) => item.date.startsWith(month)).length}
+        counts={counts}
         todayProgress={todayProgress}
       />
       <main className="main">
@@ -55,8 +70,12 @@ function Workspace() {
             {view === 'todos' && <TodosView />}
             {view === 'habits' && <HabitsView />}
             {view === 'time' && <TimeView />}
+            {view === 'goals' && <GoalsView />}
             {view === 'calendar' && <CalendarView />}
             {view === 'expenses' && <ExpenseView />}
+            {view === 'journal' && <JournalView />}
+            {view === 'people' && <PeopleView />}
+            {view === 'lists' && <ListsView />}
           </div>
         </div>
       </main>
