@@ -34,6 +34,11 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - Daily timeline of time blocks with start times, durations, linked tasks and completion toggles.
 - Editable daily focus goal with live progress, shared with Today and Insights.
 
+### Goals
+- Long-term goals with a category, optional target date and note.
+- Break each goal into milestones with a live progress bar and days-left / overdue indicator.
+- Filter by Active / Done / All, complete or reopen goals, and clear completed work.
+
 ### Calendar
 - A six-week month grid with events coloured by Personal / Work / Health / Social / Other.
 - Add, edit and delete events with dates, times and notes.
@@ -45,6 +50,21 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - Monthly spent / income / net summary and a monthly budget with progress feedback.
 - Category breakdown bars so you can see where the money went.
 - Filterable transaction history grouped by day, with currency selection.
+
+### Journal
+- Dated entries with a five-level mood check-in and autosaving text.
+- Writing prompts, full-text search, a timeline of past entries and a day streak.
+- One entry per day; navigating back lets you edit or delete what you wrote.
+
+### People
+- Keep a small, deliberate list of the people you care about with relationship and notes.
+- Set a follow-up cadence in days; overdue and due-today reminders surface in the sidebar and Today.
+- "Mark contacted" logs the date and schedules the next check-in automatically.
+
+### Lists
+- Reusable checklists for shopping, packing, reading, wishlists or anything else.
+- Quick-start templates, inline item adding, progress bars and a filter for open / done lists.
+- Clear checked items without deleting the list.
 
 ### Insights
 - **Day / Month / Year** tabs with period navigation and activity-point summaries.
@@ -73,7 +93,7 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - First run starts completely empty; no demo content.
 - Responsive layout for desktop, tablet, and mobile.
 - Subtle view transitions and hover feedback, with reduced-motion support.
-- Workspace schema v4 automatically migrates older local and cloud data.
+- Workspace schema v5 automatically migrates older local and cloud data.
 
 ## Getting started
 
@@ -118,9 +138,13 @@ src/
 │   ├── cloud/        # connection dialog
 │   ├── common/       # Icon, EmptyState, StatCard, SVG charts
 │   ├── expenses/     # transactions, budget, category insights
+│   ├── goals/        # long-term goals and milestones
 │   ├── habits/       # grid, rail, detail, overview, library, dialogs
 │   ├── insights/     # daily / monthly / yearly analytics
+│   ├── journal/      # mood check-ins and dated entries
 │   ├── layout/       # header, sidebar, theme picker
+│   ├── lists/        # reusable checklists
+│   ├── people/       # contacts and follow-up reminders
 │   ├── time/         # focus timer and daily plan
 │   ├── today/        # dashboard
 │   └── todos/        # composer, filterable list, task row
@@ -129,7 +153,7 @@ src/
 ├── lib/              # analytics, dates, finance, ids, storage, Supabase API
 ├── store/            # reducer, context, persistence + sync provider
 ├── styles/           # base tokens and one stylesheet per view
-├── types.ts          # domain models (workspace schema v4)
+├── types.ts          # domain models (workspace schema v5)
 └── App.tsx           # shell and view switching
 supabase/schema.sql   # Supabase table, policies and sync functions
 ```
