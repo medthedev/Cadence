@@ -19,6 +19,11 @@ const VIEW_COPY: Record<View, { eyebrow: string; title: string; subtitle: string
     title: 'Habits',
     subtitle: 'Small steps, repeated often, become who you are.',
   },
+  time: {
+    eyebrow: 'Workspace / Time',
+    title: 'Time',
+    subtitle: 'Plan your day, then protect your focus.',
+  },
 }
 
 export function Header({ view, theme, onToggleTheme }: HeaderProps) {
