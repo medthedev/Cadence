@@ -122,7 +122,7 @@ export function CloudDialog({ onClose }: CloudDialogProps) {
                 className="field__input"
                 value={connectionUrl}
                 onChange={(event) => setConnectionUrl(event.target.value)}
-                placeholder="https://your-project.supabase.co?key=YOUR_ANON_KEY"
+                placeholder="https://your-project.supabase.co?key=sb_publishable_..."
                 aria-label="Supabase connection URL"
               />
             </label>
@@ -150,7 +150,7 @@ export function CloudDialog({ onClose }: CloudDialogProps) {
             </label>
             <p className="cloud-hint">
               Run <code>supabase/schema.sql</code> in your SQL editor, then paste your project URL with
-              <code>?key=YOUR_ANON_KEY</code>. Same code = same workspace.
+              <code>?key=sb_publishable_...</code>. Same code = same workspace.
             </p>
             <div className="modal__footer">
               {editing && sync.config && (

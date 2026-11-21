@@ -44,11 +44,12 @@ export function generateSyncCode(): string {
   return Array.from(bytes, (byte) => CODE_ALPHABET[byte % CODE_ALPHABET.length]).join('')
 }
 
-function isSupabaseUrl(value: string): boolean {
-  return /^https:\/\/[\w-]+\.supabase\.co\/?$/i.test(value)
+function isAllowedUrl(url: URL): boolean {
+  if (url.protocol === 'https:') return true
+  return url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname)
 }
 
-/** Accepts `https://project.supabase.co?key=ANON_KEY` as one connection string. */
+/** Accepts `https://project.supabase.co?key=PUBLISHABLE_KEY` as one connection string. */
 export function parseConnectionUrl(value: string): { origin: string; apiKey: string } {
   let url: URL
   try {
@@ -56,12 +57,12 @@ export function parseConnectionUrl(value: string): { origin: string; apiKey: str
   } catch {
     throw new Error('Enter a valid Supabase connection URL')
   }
-  if (url.protocol !== 'https:' || !isSupabaseUrl(url.origin)) {
-    throw new Error('Use your Supabase project URL (https://<project>.supabase.co)')
+  if (!isAllowedUrl(url)) {
+    throw new Error('Use an https Supabase URL (or http://localhost for local Supabase)')
   }
 
   const apiKey = url.searchParams.get('key')?.trim() || import.meta.env.VITE_SUPABASE_ANON_KEY
-  if (!apiKey) throw new Error('Add your anon key to the URL as ?key=...')
+  if (!apiKey) throw new Error('Add your publishable key to the URL as ?key=...')
 
   return { origin: url.origin, apiKey }
 }

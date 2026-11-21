@@ -46,7 +46,7 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - Theme choice is remembered across reloads and follows the system preference until you pick one.
 
 ### Cloud sync (optional, Supabase)
-- One connection URL: your project URL with the public anon key appended as `?key=...`.
+- One connection URL: your project URL with the public publishable key (`sb_publishable_...`, the modern anon-key replacement) appended as `?key=...`.
 - Revision-based last-write-wins with `409` conflict handling; a stale client adopts the newer cloud state.
 - Automatic debounced pushes after local changes, plus a manual "Sync now" button.
 - Private sync-code workspaces: the same code on any device with the same connection URL shares one workspace.
@@ -77,11 +77,11 @@ bun run preview
 
 1. Create a free project at [supabase.com](https://supabase.com).
 2. Open **SQL Editor** in that project, paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and run it. This creates the `workspaces` table and the `sync_pull` / `sync_push` functions, and locks the table down behind them.
-3. In **Project Settings → API**, copy the **Project URL** and the **anon / publishable key**.
+3. In the project's **Connect** dialog (or **Settings → API Keys**), copy the **Project URL** and the **publishable key** (`sb_publishable_...`). Older projects may call this the anon key; either works. Never use the `sb_secret_...` key in the browser.
 4. In FreeTodo, click the cloud button in the header and paste one URL:
 
    ```
-   https://your-project.supabase.co?key=YOUR_ANON_KEY
+   https://your-project.supabase.co?key=sb_publishable_...
    ```
 
 5. Generate a sync code (or type your own). Enter that same URL and code on any other device and it will share the workspace.
