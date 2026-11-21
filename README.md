@@ -90,6 +90,10 @@ bun run build  # type-check + production build
 bun run preview
 ```
 
+## GitHub Pages
+
+The production build uses relative asset paths, so it works at `https://<username>.github.io/cadence/` without extra configuration. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. The included [deploy workflow](.github/workflows/deploy.yml) builds with Bun on every push to `main` and publishes `dist`.
+
 ## Connecting Supabase
 
 1. Create a free project at [supabase.com](https://supabase.com).
