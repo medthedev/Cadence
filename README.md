@@ -6,13 +6,16 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 
 ### Today
 - A dashboard that greets you and pulls together tasks, habits, focus time, events and spending.
+- "Due now" list for tasks due today or overdue, with one-tap completion.
+- Daily focus goal progress bar and a seven-day activity pulse chart.
 - One-tap habit check-in and task completion without leaving the page.
-- Quick actions to jump into tasks, calendar planning or expense logging.
+- Quick actions to jump into tasks, calendar planning, expense logging or Insights.
 
 ### Tasks
-- Add tasks with a low / medium / high priority and an optional time estimate.
+- Add tasks with a low / medium / high priority, an optional time estimate and an optional due date.
+- Edit due dates inline; overdue and due-today tasks are highlighted.
 - Complete, rename (inline), and delete tasks, or clear everything completed.
-- Filter by All / Active / Completed and search by title.
+- Filter by All / Active / Due / Completed and search by title.
 - Live progress summary; logged focus minutes appear next to each task.
 
 ### Habits
@@ -27,6 +30,7 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - Pomodoro-style focus timer with configurable focus, short-break and long-break lengths.
 - Link a session to a task; finished sessions are logged toward its time.
 - Daily timeline of time blocks with start times, durations, linked tasks and completion toggles.
+- Editable daily focus goal with live progress, shared with Today and Insights.
 
 ### Calendar
 - A six-week month grid with events coloured by Personal / Work / Health / Social / Other.
@@ -40,9 +44,19 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - Category breakdown bars so you can see where the money went.
 - Filterable transaction history grouped by day, with currency selection.
 
+### Insights
+- **Day / Month / Year** tabs with period navigation and activity-point summaries.
+- Activity score combines completed tasks (×4), habits (×3), focus minutes (÷8), time blocks (×2) and events (×1).
+- Day: focus-by-hour bars, activity-mix donut, focus-goal progress and a full log of the day.
+- Month: daily activity bars, cumulative momentum curve, spending donut and per-habit consistency strips.
+- Year: a 365-day activity heatmap, monthly bars, yearly momentum and streak / active-day / best-month highlights.
+- Click any day in the year heatmap to jump straight to its day view.
+- Charts are hand-built SVG/CSS — no chart library, full theme support.
+
 ### Themes
 - Four themes: GitHub Light, GitHub Dark, Equicord and Mono.
-- Mono is a clean black-and-white palette inspired by [medrinnn.dev](https://medrinnn.dev).
+- Mono is a refined, flat black-and-white palette with crisp borders, restrained greyscale charts and no glow — inspired by [medrinnn.dev](https://medrinnn.dev).
+- Every theme has its own five-colour chart palette.
 - Theme choice is remembered across reloads and follows the system preference until you pick one.
 
 ### Cloud sync (optional, Supabase)
@@ -57,6 +71,7 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - First run starts completely empty; no demo content.
 - Responsive layout for desktop, tablet, and mobile.
 - Subtle view transitions and hover feedback, with reduced-motion support.
+- Workspace schema v4 automatically migrates older local and cloud data.
 
 ## Getting started
 
@@ -95,19 +110,20 @@ src/
 ├── components/
 │   ├── calendar/     # month grid, events, day details
 │   ├── cloud/        # connection dialog
-│   ├── common/       # Icon, EmptyState, StatCard
+│   ├── common/       # Icon, EmptyState, StatCard, SVG charts
 │   ├── expenses/     # transactions, budget, category insights
 │   ├── habits/       # grid, rail, detail, overview, library, dialogs
+│   ├── insights/     # daily / monthly / yearly analytics
 │   ├── layout/       # header, sidebar, theme picker
 │   ├── time/         # focus timer and daily plan
 │   ├── today/        # dashboard
 │   └── todos/        # composer, filterable list, task row
 ├── data/habitLibrary.ts # 136 preset habits
 ├── hooks/useTheme.ts # theme preference
-├── lib/              # dates, finance helpers, ids, storage, Supabase API
+├── lib/              # analytics, dates, finance, ids, storage, Supabase API
 ├── store/            # reducer, context, persistence + sync provider
 ├── styles/           # base tokens and one stylesheet per view
-├── types.ts          # domain models (workspace schema v3)
+├── types.ts          # domain models (workspace schema v4)
 └── App.tsx           # shell and view switching
 supabase/schema.sql   # Supabase table, policies and sync functions
 ```
