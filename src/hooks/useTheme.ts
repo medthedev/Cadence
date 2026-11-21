@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Theme } from '../types'
 
-const STORAGE_KEY = 'freetodo.theme.v1'
+const STORAGE_KEY = 'cadence.theme.v1'
 
 function isTheme(value: unknown): value is Theme {
   return value === 'github-light' || value === 'github-dark'

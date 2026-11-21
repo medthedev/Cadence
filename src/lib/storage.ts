@@ -4,7 +4,7 @@ import type {
 } from '../types'
 import { EXPENSE_CATEGORIES, EVENT_CATEGORIES } from '../types'
 
-const STORAGE_KEY = 'freetodo.data.v1'
+const STORAGE_KEY = 'cadence.data.v1'
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null

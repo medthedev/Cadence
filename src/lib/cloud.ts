@@ -13,7 +13,7 @@ export interface CloudRecord {
   updatedAt: string
 }
 
-const STORAGE_KEY = 'freetodo.cloud.v1'
+const STORAGE_KEY = 'cadence.cloud.v1'
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 
 export class CloudConflictError extends Error {

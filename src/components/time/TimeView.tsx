@@ -11,7 +11,7 @@ import { StatCard } from '../common/StatCard'
 type Durations = Record<FocusMode, number>
 
 const DEFAULT_DURATIONS: Durations = { focus: 25, 'short-break': 5, 'long-break': 15 }
-const DURATION_STORAGE_KEY = 'freetodo.focus.durations.v1'
+const DURATION_STORAGE_KEY = 'cadence.focus.durations.v1'
 
 const MODE_LABEL: Record<FocusMode, string> = {
   focus: 'Focus',
