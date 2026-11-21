@@ -1,22 +1,21 @@
 import { useEffect, useState } from 'react'
+import { getDefaultTheme, isTheme } from '../lib/themes'
 import type { Theme } from '../types'
 
-const STORAGE_KEY = 'cadence.theme.v1'
-
-function isTheme(value: unknown): value is Theme {
-  return value === 'github-light' || value === 'github-dark'
-    || value === 'equicord' || value === 'mono'
-}
+const STORAGE_KEY = 'cadence.theme.v2'
 
 function getInitialTheme(): Theme {
   try {
     const saved: unknown = localStorage.getItem(STORAGE_KEY)
     if (isTheme(saved)) return saved
+    // Migrate v1 key if it matches a still-valid theme.
+    const legacy: unknown = localStorage.getItem('cadence.theme.v1')
+    if (isTheme(legacy)) return legacy
   } catch {
     // Fall through to the system preference.
   }
 
-  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'github-dark' : 'github-light'
+  return getDefaultTheme()
 }
 
 export function useTheme() {

@@ -3,17 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Cadence — a calm local-first workspace for tasks, habits, focus, plans and money, with daily, monthly and yearly insights." />
-    <meta name="theme-color" content="#111111" />
+    <meta name="theme-color" content="#0d1117" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <title>Cadence — Life in rhythm</title>
     <script>
       try {
-        var saved = localStorage.getItem('cadence.theme.v1');
-        var theme = saved === 'github-light' || saved === 'github-dark'
-          || saved === 'equicord' || saved === 'mono'
-          ? saved
-          : (matchMedia('(prefers-color-scheme: dark)').matches ? 'github-dark' : 'github-light');
+        var valid = {
+          'catppuccin-latte':1,'catppuccin-frappe':1,'catppuccin-macchiato':1,'catppuccin-mocha':1,
+          'gruvbox-light-hard':1,'gruvbox-light-medium':1,'gruvbox-light-soft':1,
+          'gruvbox-dark-hard':1,'gruvbox-dark-medium':1,'gruvbox-dark-soft':1,
+          'github-light':1,'github-light-hc':1,'github-dark':1,'github-dark-dimmed':1,'github-dark-hc':1
+        };
+        var saved = localStorage.getItem('cadence.theme.v2') || localStorage.getItem('cadence.theme.v1');
+        var theme = valid[saved] ? saved : (matchMedia('(prefers-color-scheme: dark)').matches ? 'github-dark' : 'github-light');
         document.documentElement.dataset.theme = theme;
       } catch (error) {
         document.documentElement.dataset.theme = 'github-light';

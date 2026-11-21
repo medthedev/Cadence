@@ -66,9 +66,11 @@ A calm, local-first workspace for tasks, habits, time, plans and money, built wi
 - Charts are hand-built SVG/CSS — no chart library, full theme support.
 
 ### Themes
-- Four themes: GitHub Light, GitHub Dark, Equicord and Mono.
-- Mono is a refined, flat black-and-white palette with crisp borders, restrained greyscale charts and no glow — inspired by [medrinnn.dev](https://medrinnn.dev).
-- Every theme has its own five-colour chart palette.
+- 15 themes across three families, inspired by popular VS Code themes:
+  - **Catppuccin**: Latte, Frappé, Macchiato, Mocha
+  - **Gruvbox**: Light Hard/Medium/Soft, Dark Hard/Medium/Soft
+  - **GitHub**: Light Default, Light High Contrast, Dark Default, Dark Dimmed, Dark High Contrast
+- Every theme has its own chart, heatmap and habit palette.
 - Theme choice is remembered across reloads and follows the system preference until you pick one.
 
 ### Cloud sync (optional, Supabase)
