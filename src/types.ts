@@ -19,6 +19,7 @@ export interface Todo {
   completedAt?: string
   estimatedMinutes?: number
   loggedMinutes?: number
+  dueDate?: string
 }
 
 export interface Habit {
@@ -76,7 +77,7 @@ export interface Transaction {
 export type FocusMode = 'focus' | 'short-break' | 'long-break'
 
 export interface AppData {
-  version: 3
+  version: 4
   todos: Todo[]
   habits: Habit[]
   timeBlocks: TimeBlock[]
@@ -85,8 +86,9 @@ export interface AppData {
   transactions: Transaction[]
   currency: string
   monthlyBudget: number
+  dailyFocusGoal: number
 }
 
-export type View = 'today' | 'todos' | 'habits' | 'time' | 'calendar' | 'expenses'
+export type View = 'today' | 'insights' | 'todos' | 'habits' | 'time' | 'calendar' | 'expenses'
 
 export type Theme = 'github-light' | 'github-dark' | 'equicord' | 'mono'

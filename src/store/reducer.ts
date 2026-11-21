@@ -9,6 +9,7 @@ export type AppAction =
   | { type: 'todo/rename'; id: string; title: string }
   | { type: 'todo/setPriority'; id: string; priority: Priority }
   | { type: 'todo/setEstimate'; id: string; minutes?: number }
+  | { type: 'todo/setDueDate'; id: string; date?: string }
   | { type: 'todo/delete'; id: string }
   | { type: 'todo/clearCompleted' }
   | { type: 'timeBlock/add'; block: TimeBlock }
@@ -26,6 +27,7 @@ export type AppAction =
   | { type: 'transaction/delete'; id: string }
   | { type: 'finance/currency'; currency: string }
   | { type: 'finance/budget'; amount: number }
+  | { type: 'finance/focusGoal'; minutes: number }
 
 export function appReducer(state: AppData, action: AppAction): AppData {
   switch (action.type) {
@@ -68,6 +70,14 @@ export function appReducer(state: AppData, action: AppAction): AppData {
         ...state,
         todos: state.todos.map((todo) => todo.id === action.id
           ? { ...todo, estimatedMinutes: action.minutes }
+          : todo),
+      }
+
+    case 'todo/setDueDate':
+      return {
+        ...state,
+        todos: state.todos.map((todo) => todo.id === action.id
+          ? { ...todo, dueDate: action.date }
           : todo),
       }
 
@@ -156,5 +166,8 @@ export function appReducer(state: AppData, action: AppAction): AppData {
 
     case 'finance/budget':
       return { ...state, monthlyBudget: action.amount }
+
+    case 'finance/focusGoal':
+      return { ...state, dailyFocusGoal: action.minutes }
   }
 }

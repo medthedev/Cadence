@@ -17,6 +17,7 @@ function isTodo(value: unknown): value is Todo {
     && typeof value.done === 'boolean'
     && typeof value.priority === 'string'
     && typeof value.createdAt === 'string'
+    && (value.dueDate === undefined || typeof value.dueDate === 'string')
 }
 
 function isHabit(value: unknown): value is Habit {
@@ -84,7 +85,7 @@ function isTransaction(value: unknown): value is Transaction {
 
 export function isAppData(value: unknown): value is AppData {
   return isRecord(value)
-    && value.version === 3
+    && value.version === 4
     && Array.isArray(value.todos)
     && Array.isArray(value.habits)
     && Array.isArray(value.timeBlocks)
@@ -93,6 +94,7 @@ export function isAppData(value: unknown): value is AppData {
     && Array.isArray(value.transactions)
     && typeof value.currency === 'string'
     && typeof value.monthlyBudget === 'number'
+    && typeof value.dailyFocusGoal === 'number'
     && value.todos.every(isTodo)
     && value.habits.every(isHabit)
     && value.timeBlocks.every(isTimeBlock)
@@ -103,7 +105,7 @@ export function isAppData(value: unknown): value is AppData {
 
 export function createEmptyData(): AppData {
   return {
-    version: 3,
+    version: 4,
     todos: [],
     habits: [],
     timeBlocks: [],
@@ -112,15 +114,16 @@ export function createEmptyData(): AppData {
     transactions: [],
     currency: 'USD',
     monthlyBudget: 0,
+    dailyFocusGoal: 60,
   }
 }
 
 /** Accepts every historical shape and returns a current workspace. */
 export function migrateData(value: unknown): AppData | null {
   if (!isRecord(value)) return null
-  if (value.version === 3) return isAppData(value) ? value : null
+  if (value.version === 4) return isAppData(value) ? value : null
 
-  if (value.version === 1 || value.version === 2) {
+  if (value.version === 1 || value.version === 2 || value.version === 3) {
     return {
       ...createEmptyData(),
       todos: Array.isArray(value.todos) ? value.todos.filter(isTodo) : [],
@@ -129,6 +132,12 @@ export function migrateData(value: unknown): AppData | null {
       focusSessions: Array.isArray(value.focusSessions)
         ? value.focusSessions.filter(isFocusSession)
         : [],
+      events: Array.isArray(value.events) ? value.events.filter(isCalendarEvent) : [],
+      transactions: Array.isArray(value.transactions)
+        ? value.transactions.filter(isTransaction)
+        : [],
+      currency: typeof value.currency === 'string' ? value.currency : 'USD',
+      monthlyBudget: typeof value.monthlyBudget === 'number' ? value.monthlyBudget : 0,
     }
   }
 
