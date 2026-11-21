@@ -1,6 +1,6 @@
 import type {
   AppData, CalendarEvent, ExpenseCategory, EventCategory, FocusMode, FocusSession,
-  Goal, GoalMilestone, Habit, LifeList, ListItem, TimeBlock, Todo, Transaction,
+  Goal, GoalMilestone, Habit, LifeList, ListItem, PrayerName, TimeBlock, Todo, Transaction,
 } from '../types'
 import { EXPENSE_CATEGORIES, EVENT_CATEGORIES, GOAL_CATEGORIES } from '../types'
 
@@ -20,15 +20,31 @@ function isTodo(value: unknown): value is Todo {
     && (value.dueDate === undefined || typeof value.dueDate === 'string')
 }
 
+function isHabitKind(value: unknown): value is 'check' | 'water' | 'prayer' {
+  return value === 'check' || value === 'water' || value === 'prayer'
+}
+
 function isHabit(value: unknown): value is Habit {
-  return isRecord(value)
-    && typeof value.id === 'string'
-    && typeof value.name === 'string'
-    && typeof value.emoji === 'string'
-    && typeof value.color === 'string'
-    && typeof value.weeklyGoal === 'number'
-    && typeof value.createdAt === 'string'
-    && Array.isArray(value.completedDates)
+  if (!isRecord(value)) return false
+  if (typeof value.id !== 'string' || typeof value.name !== 'string' || typeof value.emoji !== 'string') return false
+  if (typeof value.color !== 'string' || typeof value.weeklyGoal !== 'number' || typeof value.createdAt !== 'string') return false
+  if (!Array.isArray(value.completedDates)) return false
+  if (value.kind !== undefined && !isHabitKind(value.kind)) return false
+  if (value.waterTarget !== undefined && typeof value.waterTarget !== 'number') return false
+  if (value.waterLog !== undefined && !isRecord(value.waterLog)) return false
+  if (value.prayerLog !== undefined && !isRecord(value.prayerLog)) return false
+  return true
+}
+
+function normalizeHabit(value: Habit): Habit {
+  const kind = isHabitKind(value.kind) ? value.kind : 'check'
+  return {
+    ...value,
+    kind,
+    waterTarget: kind === 'water' ? (typeof value.waterTarget === 'number' ? value.waterTarget : 2) : undefined,
+    waterLog: kind === 'water' && isRecord(value.waterLog) ? (value.waterLog as Record<string, number>) : undefined,
+    prayerLog: kind === 'prayer' && isRecord(value.prayerLog) ? (value.prayerLog as Record<string, PrayerName[]>) : undefined,
+  }
 }
 
 function isTimeBlock(value: unknown): value is TimeBlock {
@@ -124,7 +140,7 @@ function isLifeList(value: unknown): value is LifeList {
 
 export function isAppData(value: unknown): value is AppData {
   return isRecord(value)
-    && value.version === 6
+    && value.version === 7
     && Array.isArray(value.todos)
     && Array.isArray(value.habits)
     && Array.isArray(value.timeBlocks)
@@ -148,7 +164,7 @@ export function isAppData(value: unknown): value is AppData {
 
 export function createEmptyData(): AppData {
   return {
-    version: 6,
+    version: 7,
     todos: [],
     habits: [],
     timeBlocks: [],
@@ -166,13 +182,17 @@ export function createEmptyData(): AppData {
 /** Accepts every historical shape and returns a current workspace. */
 export function migrateData(value: unknown): AppData | null {
   if (!isRecord(value)) return null
-  if (value.version === 6) return isAppData(value) ? value : null
 
-  if (typeof value.version === 'number' && value.version >= 1 && value.version <= 5) {
+  if (value.version === 7) {
+    if (!isAppData(value)) return null
+    return { ...value, habits: value.habits.map(normalizeHabit) }
+  }
+
+  if (typeof value.version === 'number' && value.version >= 1 && value.version <= 6) {
     return {
       ...createEmptyData(),
       todos: Array.isArray(value.todos) ? value.todos.filter(isTodo) : [],
-      habits: Array.isArray(value.habits) ? value.habits.filter(isHabit) : [],
+      habits: Array.isArray(value.habits) ? value.habits.filter(isHabit).map(normalizeHabit) : [],
       timeBlocks: Array.isArray(value.timeBlocks) ? value.timeBlocks.filter(isTimeBlock) : [],
       focusSessions: Array.isArray(value.focusSessions)
         ? value.focusSessions.filter(isFocusSession)

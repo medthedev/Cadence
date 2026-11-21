@@ -1,6 +1,6 @@
 import type {
   AppData, CalendarEvent, FocusSession, Goal, GoalMilestone, Habit,
-  LifeList, ListItem, Priority, TimeBlock, Todo, Transaction,
+  LifeList, ListItem, PrayerName, Priority, TimeBlock, Todo, Transaction,
 } from '../types'
 
 export type AppAction =
@@ -18,8 +18,10 @@ export type AppAction =
   | { type: 'timeBlock/delete'; id: string }
   | { type: 'focus/session'; session: FocusSession }
   | { type: 'habit/add'; habit: Habit }
-  | { type: 'habit/update'; id: string; changes: Pick<Habit, 'name' | 'emoji' | 'color' | 'weeklyGoal'> }
+  | { type: 'habit/update'; id: string; changes: Pick<Habit, 'name' | 'emoji' | 'color' | 'weeklyGoal' | 'kind' | 'waterTarget'> }
   | { type: 'habit/toggleDate'; id: string; date: string }
+  | { type: 'habit/logWater'; id: string; date: string; liters: number }
+  | { type: 'habit/togglePrayer'; id: string; date: string; prayer: PrayerName }
   | { type: 'habit/delete'; id: string }
   | { type: 'event/add'; event: CalendarEvent }
   | { type: 'event/update'; id: string; changes: Pick<CalendarEvent, 'title' | 'date' | 'time' | 'category' | 'notes'> }
@@ -131,9 +133,31 @@ export function appReducer(state: AppData, action: AppAction): AppData {
     case 'habit/update':
       return {
         ...state,
-        habits: state.habits.map((habit) => habit.id === action.id
-          ? { ...habit, ...action.changes }
-          : habit),
+        habits: state.habits.map((habit) => {
+          if (habit.id !== action.id) return habit
+          const kind = action.changes.kind ?? habit.kind
+          const kindChanged = kind !== habit.kind
+          const next: Habit = { ...habit, ...action.changes, kind }
+          if (kindChanged) {
+            next.completedDates = []
+            next.waterLog = kind === 'water' ? {} : undefined
+            next.prayerLog = kind === 'prayer' ? {} : undefined
+            next.waterTarget = kind === 'water' ? (action.changes.waterTarget ?? habit.waterTarget ?? 2) : undefined
+          } else if (kind === 'water') {
+            next.waterTarget = action.changes.waterTarget ?? habit.waterTarget ?? 2
+            next.waterLog = habit.waterLog ?? {}
+            next.prayerLog = undefined
+          } else if (kind === 'prayer') {
+            next.prayerLog = habit.prayerLog ?? {}
+            next.waterLog = undefined
+            next.waterTarget = undefined
+          } else {
+            next.waterLog = undefined
+            next.prayerLog = undefined
+            next.waterTarget = undefined
+          }
+          return next
+        }),
       }
 
     case 'habit/toggleDate':
@@ -141,6 +165,7 @@ export function appReducer(state: AppData, action: AppAction): AppData {
         ...state,
         habits: state.habits.map((habit) => {
           if (habit.id !== action.id) return habit
+          if (habit.kind !== 'check') return habit
           const completed = habit.completedDates.includes(action.date)
           return {
             ...habit,
@@ -150,6 +175,46 @@ export function appReducer(state: AppData, action: AppAction): AppData {
           }
         }),
       }
+
+    case 'habit/logWater': {
+      return {
+        ...state,
+        habits: state.habits.map((habit) => {
+          if (habit.id !== action.id || habit.kind !== 'water') return habit
+          const target = habit.waterTarget ?? 2
+          const liters = Math.max(0, Math.round(action.liters * 10) / 10)
+          const waterLog = { ...(habit.waterLog ?? {}), [action.date]: liters }
+          if (liters <= 0) delete waterLog[action.date]
+          const met = liters >= target
+          const hasDate = habit.completedDates.includes(action.date)
+          const completedDates = met
+            ? (hasDate ? habit.completedDates : [...habit.completedDates, action.date])
+            : habit.completedDates.filter((d) => d !== action.date)
+          return { ...habit, waterLog, completedDates }
+        }),
+      }
+    }
+
+    case 'habit/togglePrayer': {
+      return {
+        ...state,
+        habits: state.habits.map((habit) => {
+          if (habit.id !== action.id || habit.kind !== 'prayer') return habit
+          const current = habit.prayerLog?.[action.date] ?? []
+          const has = current.includes(action.prayer)
+          const next = has ? current.filter((p) => p !== action.prayer) : [...current, action.prayer]
+          const prayerLog = { ...(habit.prayerLog ?? {}) }
+          if (next.length === 0) delete prayerLog[action.date]
+          else prayerLog[action.date] = next
+          const met = next.length >= 5
+          const hasDate = habit.completedDates.includes(action.date)
+          const completedDates = met
+            ? (hasDate ? habit.completedDates : [...habit.completedDates, action.date])
+            : habit.completedDates.filter((d) => d !== action.date)
+          return { ...habit, prayerLog, completedDates }
+        }),
+      }
+    }
 
     case 'habit/delete':
       return { ...state, habits: state.habits.filter((habit) => habit.id !== action.id) }

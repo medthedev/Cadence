@@ -25,6 +25,11 @@ export interface Todo {
   dueDate?: string
 }
 
+export type HabitKind = 'check' | 'water' | 'prayer'
+
+export const PRAYERS = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const
+export type PrayerName = (typeof PRAYERS)[number]
+
 export interface Habit {
   id: string
   name: string
@@ -32,7 +37,15 @@ export interface Habit {
   color: HabitColor
   weeklyGoal: number
   createdAt: string
+  /** Dates where the day's goal was met. Used for streaks and heatmaps. */
   completedDates: string[]
+  kind: HabitKind
+  /** Daily water target in liters (water kind). */
+  waterTarget?: number
+  /** Date -> liters logged (water kind). */
+  waterLog?: Record<string, number>
+  /** Date -> completed prayers (prayer kind). */
+  prayerLog?: Record<string, PrayerName[]>
   source?: string
 }
 
@@ -112,7 +125,7 @@ export interface LifeList {
 export type FocusMode = 'focus' | 'short-break' | 'long-break'
 
 export interface AppData {
-  version: 6
+  version: 7
   todos: Todo[]
   habits: Habit[]
   timeBlocks: TimeBlock[]
