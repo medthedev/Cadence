@@ -1,5 +1,6 @@
 import type { View } from '../../types'
 import { Icon } from '../common/Icon'
+import { Logo } from '../common/Logo'
 import type { IconName } from '../common/Icon'
 
 interface SidebarProps {
@@ -55,10 +56,10 @@ export function Sidebar({
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand__mark"><Icon name="check" size={20} /></div>
+        <div className="brand__mark"><Logo size={22} /></div>
         <div>
-          <p className="brand__name">FreeTodo</p>
-          <p className="brand__tagline">Personal workspace</p>
+          <p className="brand__name">Cadence</p>
+          <p className="brand__tagline">Life, in rhythm.</p>
         </div>
       </div>
 

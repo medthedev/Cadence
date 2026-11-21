@@ -271,7 +271,6 @@ button:disabled {
   border-radius: 11px;
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 5px 14px rgba(16, 163, 127, 0.25);
 }
 
 .brand__name {

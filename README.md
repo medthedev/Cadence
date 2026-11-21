@@ -1,6 +1,8 @@
-# FreeTodo
+# Cadence
 
-A calm, local-first workspace for tasks, habits, time, plans and money, built with React, TypeScript, Vite and Bun. It includes a GitHub-style contribution grid for habits and optional Supabase cloud sync.
+Life, in rhythm.
+
+A calm, local-first workspace for tasks, habits, time, plans and money, built with React, TypeScript, Vite and Bun. It includes a GitHub-style contribution grid for habits, daily / monthly / yearly insights and optional Supabase cloud sync.
 
 ## Features
 
@@ -93,7 +95,7 @@ bun run preview
 1. Create a free project at [supabase.com](https://supabase.com).
 2. Open **SQL Editor** in that project, paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and run it. This creates the `workspaces` table and the `sync_pull` / `sync_push` functions, and locks the table down behind them.
 3. In the project's **Connect** dialog (or **Settings → API Keys**), copy the **Project URL** and the **publishable key** (`sb_publishable_...`). Older projects may call this the anon key; either works. Never use the `sb_secret_...` key in the browser.
-4. In FreeTodo, click the cloud button in the header and paste one URL:
+4. In Cadence, click the cloud button in the header and paste one URL:
 
    ```
    https://your-project.supabase.co?key=sb_publishable_...

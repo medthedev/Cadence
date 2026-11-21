@@ -1,4 +1,4 @@
--- FreeTodo cloud sync schema for Supabase.
+-- Cadence cloud sync schema for Supabase.
 -- Paste this into the Supabase SQL Editor and run it once per project.
 -- The app talks to the two RPC functions below using only the project URL
 -- and the public anon key, so no direct table access is needed.
