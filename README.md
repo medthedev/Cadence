@@ -1,15 +1,19 @@
 # FreeTodo
 
-A calm, local-first workspace for tasks, habits and focused time, built with React, TypeScript, Vite and Bun. It includes a GitHub-style contribution grid that shows every day you have checked off a habit, plus optional self-hosted cloud sync.
+A calm, local-first workspace for tasks, habits, time, plans and money, built with React, TypeScript, Vite and Bun. It includes a GitHub-style contribution grid for habits and optional Supabase cloud sync.
 
 ## Features
+
+### Today
+- A dashboard that greets you and pulls together tasks, habits, focus time, events and spending.
+- One-tap habit check-in and task completion without leaving the page.
+- Quick actions to jump into tasks, calendar planning or expense logging.
 
 ### Tasks
 - Add tasks with a low / medium / high priority and an optional time estimate.
 - Complete, rename (inline), and delete tasks, or clear everything completed.
 - Filter by All / Active / Completed and search by title.
-- Live progress summary; tasks are sorted by status, priority, and age.
-- Logged focus minutes appear next to each task alongside its estimate.
+- Live progress summary; logged focus minutes appear next to each task.
 
 ### Habits
 - Create habits with an icon, color, and weekly goal (1–7 days).
@@ -21,25 +25,38 @@ A calm, local-first workspace for tasks, habits and focused time, built with Rea
 
 ### Time management
 - Pomodoro-style focus timer with configurable focus, short-break and long-break lengths.
-- Optional auto-rotation through breaks after every fourth focus session.
-- Link a session to a task; finished sessions are logged and counted toward its time.
+- Link a session to a task; finished sessions are logged toward its time.
 - Daily timeline of time blocks with start times, durations, linked tasks and completion toggles.
+
+### Calendar
+- A six-week month grid with events coloured by Personal / Work / Health / Social / Other.
+- Add, edit and delete events with dates, times and notes.
+- Clicking a day shows its events plus that day's habits, focus minutes and spending.
+- "Coming up" list of the next five events; Today view also surfaces today's schedule.
+
+### Expenses
+- Quick-add transactions with categories, amounts, dates and optional notes.
+- Monthly spent / income / net summary and a monthly budget with progress feedback.
+- Category breakdown bars so you can see where the money went.
+- Filterable transaction history grouped by day, with currency selection.
 
 ### Themes
 - Four themes: GitHub Light, GitHub Dark, Equicord and Mono.
 - Mono is a clean black-and-white palette inspired by [medrinnn.dev](https://medrinnn.dev).
 - Theme choice is remembered across reloads and follows the system preference until you pick one.
 
-### Cloud sync (optional)
-- Private sync-code workspaces; the same code on two devices shares one workspace.
-- Revision-based last-write-wins with `409` conflict handling, so a stale client adopts the newer cloud state.
+### Cloud sync (optional, Supabase)
+- One connection URL: your project URL with the public anon key appended as `?key=...`.
+- Revision-based last-write-wins with `409` conflict handling; a stale client adopts the newer cloud state.
 - Automatic debounced pushes after local changes, plus a manual "Sync now" button.
+- Private sync-code workspaces: the same code on any device with the same connection URL shares one workspace.
 - Local `localStorage` data is always kept, whether sync is on or off.
-- No accounts, no third-party services — the included Bun server stores one JSON file per workspace.
+- No accounts required — access is controlled by the SQL functions and your anon key.
 
 ### General
 - First run starts completely empty; no demo content.
 - Responsive layout for desktop, tablet, and mobile.
+- Subtle view transitions and hover feedback, with reduced-motion support.
 
 ## Getting started
 
@@ -48,40 +65,51 @@ bun install
 bun run dev
 ```
 
-`bun run dev` starts both the Vite client and the local cloud server. Vite proxies `/api` to `http://localhost:8787`, so the default cloud URL works out of the box. Open the cloud button in the header to connect — generate a code, then enter that same code on another device pointed at the same server.
-
 Other scripts:
 
 ```bash
-bun run dev:client   # Vite only (no cloud server)
-bun run cloud        # cloud server only (also: bun run start:cloud)
-bun run lint         # ESLint
-bun run build        # type-check + production build
-bun run preview      # preview build (also proxies /api)
+bun run lint   # ESLint
+bun run build  # type-check + production build
+bun run preview
 ```
 
-To point the client at a remote server, set `VITE_CLOUD_URL` at build time, or enter the full URL in the cloud dialog. The server accepts `PORT` and `HOST` environment variables and defaults to port `8787` on `0.0.0.0`. Workspace files live in `server/.data/` (git-ignored).
+## Connecting Supabase
+
+1. Create a free project at [supabase.com](https://supabase.com).
+2. Open **SQL Editor** in that project, paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and run it. This creates the `workspaces` table and the `sync_pull` / `sync_push` functions, and locks the table down behind them.
+3. In **Project Settings → API**, copy the **Project URL** and the **anon / publishable key**.
+4. In FreeTodo, click the cloud button in the header and paste one URL:
+
+   ```
+   https://your-project.supabase.co?key=YOUR_ANON_KEY
+   ```
+
+5. Generate a sync code (or type your own). Enter that same URL and code on any other device and it will share the workspace.
+
+If you would rather paste only the project URL, copy `.env.example` to `.env.local` and fill in `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` before building. The app will use that key as a fallback when the URL has no `?key=` part.
 
 ## Project structure
 
 ```
 src/
 ├── components/
+│   ├── calendar/     # month grid, events, day details
 │   ├── cloud/        # connection dialog
 │   ├── common/       # Icon, EmptyState, StatCard
-│   ├── habits/       # grid, rail, detail, overview, library, create/edit dialog
+│   ├── expenses/     # transactions, budget, category insights
+│   ├── habits/       # grid, rail, detail, overview, library, dialogs
 │   ├── layout/       # header, sidebar, theme picker
 │   ├── time/         # focus timer and daily plan
+│   ├── today/        # dashboard
 │   └── todos/        # composer, filterable list, task row
 ├── data/habitLibrary.ts # 136 preset habits
 ├── hooks/useTheme.ts # theme preference
-├── lib/              # date keys/calendar, statistics, ids, storage, cloud API
+├── lib/              # dates, finance helpers, ids, storage, Supabase API
 ├── store/            # reducer, context, persistence + sync provider
-├── styles/           # base tokens, tasks, habits, time, cloud
-├── types.ts          # domain models
+├── styles/           # base tokens and one stylesheet per view
+├── types.ts          # domain models (workspace schema v3)
 └── App.tsx           # shell and view switching
-server/index.js       # Bun cloud sync server
-scripts/dev.js        # runs Vite and the cloud server together
+supabase/schema.sql   # Supabase table, policies and sync functions
 ```
 
-Dates are stored as local `YYYY-MM-DD` keys so the grid and streaks stay in the user's timezone. All state changes go through one reducer in `src/store/reducer.ts`, which the provider persists to local storage and, when connected, pushes to the cloud.
+Dates are stored as local `YYYY-MM-DD` keys so the grid and streaks stay in the user's timezone. All state changes go through one reducer in `src/store/reducer.ts`, which the provider persists to local storage and, when connected, pushes to Supabase.
