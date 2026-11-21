@@ -5,7 +5,7 @@ import { dailySpend, EVENT_META, formatMoney } from '../../lib/finance'
 import { createId } from '../../lib/id'
 import { useAppData } from '../../store/context'
 import { EVENT_CATEGORIES } from '../../types'
-import type { CalendarEvent, EventCategory } from '../../types'
+import type { CalendarEvent, EventCategory, Priority } from '../../types'
 import { EmptyState } from '../common/EmptyState'
 import { Icon } from '../common/Icon'
 
@@ -20,6 +20,8 @@ interface Draft {
 function emptyDraft(date: string): Draft {
   return { title: '', date, time: '', category: 'personal', notes: '' }
 }
+
+const PRIORITY_WEIGHT: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
 
 export function CalendarView() {
   const { data, dispatch } = useAppData()
@@ -38,6 +40,9 @@ export function CalendarView() {
     .filter((event) => event.date >= today)
     .sort((a, b) => `${a.date}${a.time ?? ''}`.localeCompare(`${b.date}${b.time ?? ''}`))
     .slice(0, 5)
+  const selectedDue = data.todos
+    .filter((todo) => todo.dueDate === selectedDate && !todo.done)
+    .sort((a, b) => PRIORITY_WEIGHT[a.priority] - PRIORITY_WEIGHT[b.priority])
   const selectedHabits = data.habits.filter((habit) => habit.completedDates.includes(selectedDate)).length
   const selectedFocus = data.focusSessions
     .filter((session) => session.date === selectedDate && session.mode === 'focus')
@@ -141,6 +146,8 @@ export function CalendarView() {
           ))}
           {weeks.flat().map((day) => {
             const events = data.events.filter((event) => event.date === day.key)
+            const dueTodos = data.todos.filter((todo) => todo.dueDate === day.key && !todo.done)
+            const eventLimit = dueTodos.length > 0 ? 1 : 2
             return (
               <button
                 key={day.key}
@@ -159,13 +166,20 @@ export function CalendarView() {
               >
                 <span className="calendar-cell__number">{day.date.getDate()}</span>
                 <span className="calendar-cell__events">
-                  {events.slice(0, 2).map((event) => (
+                  {dueTodos.length > 0 && (
+                    <span className="calendar-pill calendar-pill--due" title={`${dueTodos.length} task${dueTodos.length === 1 ? '' : 's'} due`}>
+                      ✓ {dueTodos.length} due
+                    </span>
+                  )}
+                  {events.slice(0, eventLimit).map((event) => (
                     <span key={event.id} className={`calendar-pill calendar-pill--${EVENT_META[event.category].tone}`}>
                       {event.time && <small>{event.time}</small>}
                       {event.title}
                     </span>
                   ))}
-                  {events.length > 2 && <span className="calendar-cell__more">+{events.length - 2} more</span>}
+                  {events.length > eventLimit && (
+                    <span className="calendar-cell__more">+{events.length - eventLimit} more</span>
+                  )}
                 </span>
               </button>
             )
@@ -185,6 +199,28 @@ export function CalendarView() {
               Add
             </button>
           </div>
+
+          {selectedDue.length > 0 && (
+            <div className="day-due">
+              <p className="card__eyebrow">Due on this day</p>
+              <ul className="day-due__list">
+                {selectedDue.map((todo) => (
+                  <li key={todo.id}>
+                    <button
+                      type="button"
+                      className="habit-check"
+                      onClick={() => dispatch({ type: 'todo/toggle', id: todo.id })}
+                      aria-label={`Complete ${todo.title}`}
+                    >
+                      <Icon name="check" size={13} strokeWidth={2.6} />
+                    </button>
+                    <span>{todo.title}</span>
+                    <span className={`priority-dot priority-dot--${todo.priority}`} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {selectedEvents.length > 0 ? (
             <ul className="event-list">
@@ -228,6 +264,7 @@ export function CalendarView() {
           )}
 
           <div className="day-summary">
+            <div><Icon name="list" size={14} /> <strong>{selectedDue.length}</strong> due</div>
             <div><Icon name="check" size={14} /> <strong>{selectedHabits}</strong> habits</div>
             <div><Icon name="timer" size={14} /> <strong>{selectedFocus}m</strong> focus</div>
             <div><Icon name="wallet" size={14} /> <strong>{formatMoney(dailySpend(data.transactions, selectedDate), data.currency)}</strong> spent</div>

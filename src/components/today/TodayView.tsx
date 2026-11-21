@@ -1,7 +1,10 @@
-import { formatLongDate, todayKey } from '../../lib/date'
+import { dayActivity } from '../../lib/analytics'
+import { addDays, formatLongDate, fromDateKey, getWeekdayName, toDateKey, todayKey } from '../../lib/date'
 import { dailySpend, EVENT_META, EXPENSE_META, formatMoney } from '../../lib/finance'
 import { useAppData } from '../../store/context'
 import type { View } from '../../types'
+import { BarChart } from '../common/Charts'
+import type { ChartPoint } from '../common/Charts'
 import { EmptyState } from '../common/EmptyState'
 import { Icon } from '../common/Icon'
 import { StatCard } from '../common/StatCard'
@@ -38,6 +41,20 @@ export function TodayView({ onNavigate }: TodayViewProps) {
   const recent = data.transactions.slice(0, 4)
   const rhythm = data.habits.length ? Math.round((habitsDone / data.habits.length) * 100) : 0
 
+  const dueTasks = data.todos
+    .filter((todo) => !todo.done && todo.dueDate && todo.dueDate <= today)
+    .sort((a, b) => (a.dueDate ?? '').localeCompare(b.dueDate ?? ''))
+  const goal = data.dailyFocusGoal
+  const goalPercent = goal > 0 ? Math.min(100, Math.round((focusMinutes / goal) * 100)) : 0
+
+  const weekPoints: ChartPoint[] = Array.from({ length: 7 }, (_, index) => {
+    const key = toDateKey(addDays(new Date(), index - 6))
+    return {
+      label: getWeekdayName(fromDateKey(key).getDay()).slice(0, 1),
+      value: dayActivity(data, key).score,
+    }
+  })
+
   return (
     <div className="view-stack today-view">
       <section className="hero-card">
@@ -60,6 +77,10 @@ export function TodayView({ onNavigate }: TodayViewProps) {
             <button type="button" className="button button--ghost" onClick={() => onNavigate('expenses')}>
               <Icon name="wallet" size={16} />
               Log spending
+            </button>
+            <button type="button" className="button button--ghost" onClick={() => onNavigate('insights')}>
+              <Icon name="chart" size={16} />
+              Insights
             </button>
           </div>
         </div>
@@ -85,6 +106,20 @@ export function TodayView({ onNavigate }: TodayViewProps) {
         <StatCard icon={<Icon name="timer" size={18} />} label="Focus time" value={focusMinutes} suffix=" min" />
         <StatCard icon={<Icon name="wallet" size={18} />} label="Spent today" value={formatMoney(spent, data.currency)} />
       </div>
+
+      <section className="card today-goal">
+        <div className="card__header">
+          <div>
+            <p className="card__eyebrow">Daily focus goal</p>
+            <h3 className="card__title">{focusMinutes} of {goal} minutes</h3>
+          </div>
+          <button type="button" className="text-button" onClick={() => onNavigate('time')}>Adjust goal →</button>
+        </div>
+        <div className="budget-track">
+          <div className="budget-fill" style={{ width: `${goalPercent}%` }} />
+        </div>
+        <p className="budget-caption">{goalPercent}% complete · {Math.max(0, goal - focusMinutes)} minutes to go</p>
+      </section>
 
       <div className="today-grid">
         <section className="card">
@@ -130,6 +165,39 @@ export function TodayView({ onNavigate }: TodayViewProps) {
         </section>
 
         <div className="today-side">
+          {dueTasks.length > 0 && (
+            <section className="card due-card">
+              <div className="card__header">
+                <div>
+                  <p className="card__eyebrow">Needs attention</p>
+                  <h3 className="card__title">Due now</h3>
+                </div>
+                <button type="button" className="text-button" onClick={() => onNavigate('todos')}>All tasks →</button>
+              </div>
+              <ul className="insight-log">
+                {dueTasks.map((todo) => (
+                  <li key={todo.id}>
+                    <span className="insight-log__icon insight-log__icon--task"><Icon name="check" size={14} /></span>
+                    <div className="insight-log__body">
+                      <strong>{todo.title}</strong>
+                      <small className={todo.dueDate !== today ? 'insight-log__overdue' : ''}>
+                        {todo.dueDate === today ? 'Due today' : `Overdue · ${todo.dueDate}`}
+                      </small>
+                    </div>
+                    <button
+                      type="button"
+                      className="icon-button"
+                      onClick={() => dispatch({ type: 'todo/toggle', id: todo.id })}
+                      aria-label={`Complete ${todo.title}`}
+                    >
+                      <Icon name="check" size={14} />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
           <section className="card">
             <div className="card__header">
               <div>
@@ -212,6 +280,17 @@ export function TodayView({ onNavigate }: TodayViewProps) {
             ) : (
               <p className="sessions-empty">No transactions recorded yet.</p>
             )}
+          </section>
+
+          <section className="card pulse-card">
+            <div className="card__header">
+              <div>
+                <h3 className="card__title">Last 7 days</h3>
+                <p className="card__description">Your activity pulse.</p>
+              </div>
+              <button type="button" className="text-button" onClick={() => onNavigate('insights')}>Full insights →</button>
+            </div>
+            <BarChart points={weekPoints} height={110} color="var(--chart-1)" labelEvery={1} />
           </section>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { KeyboardEvent } from 'react'
-import { formatDate, todayKey } from '../../lib/date'
+import { addDays, formatDate, toDateKey, todayKey } from '../../lib/date'
 import { useAppData } from '../../store/context'
 import type { Todo } from '../../types'
 import { Icon } from '../common/Icon'
@@ -14,7 +14,20 @@ const PRIORITY_LABEL = { low: 'Low', medium: 'Medium', high: 'High' } as const
 export function TodoItem({ todo }: TodoItemProps) {
   const { dispatch } = useAppData()
   const [isEditing, setIsEditing] = useState(false)
+  const [editingDue, setEditingDue] = useState(false)
   const [draft, setDraft] = useState(todo.title)
+
+  const today = todayKey()
+  const tomorrow = toDateKey(addDays(new Date(), 1))
+  const dueLabel = todo.dueDate === today
+    ? 'Today'
+    : todo.dueDate === tomorrow ? 'Tomorrow' : todo.dueDate ? formatDate(todo.dueDate) : ''
+  const overdue = Boolean(todo.dueDate && todo.dueDate < today && !todo.done)
+
+  function changeDue(date: string) {
+    dispatch({ type: 'todo/setDueDate', id: todo.id, date: date || undefined })
+    setEditingDue(false)
+  }
 
   function save() {
     const trimmed = draft.trim()
@@ -62,6 +75,32 @@ export function TodoItem({ todo }: TodoItemProps) {
           <span className={`priority-badge priority-badge--${todo.priority}`}>
             {PRIORITY_LABEL[todo.priority]}
           </span>
+          {editingDue ? (
+            <input
+              type="date"
+              className="todo-due__input"
+              value={todo.dueDate ?? ''}
+              onChange={(event) => changeDue(event.target.value)}
+              onKeyDown={(event) => { if (event.key === 'Escape') setEditingDue(false) }}
+              autoFocus
+              aria-label={`Due date for ${todo.title}`}
+            />
+          ) : (
+            <button
+              type="button"
+              className={[
+                'todo-due',
+                todo.dueDate ? '' : 'todo-due--empty',
+                overdue ? 'todo-due--overdue' : '',
+                todo.dueDate === today ? 'todo-due--today' : '',
+              ].filter(Boolean).join(' ')}
+              onClick={() => setEditingDue(true)}
+              title={todo.dueDate ? `Due ${formatDate(todo.dueDate)} · click to change` : 'Add a due date'}
+            >
+              <Icon name="calendar" size={12} />
+              {dueLabel || 'Due date'}
+            </button>
+          )}
           <span className="todo-item__date">
             {todo.createdAt === todayKey() ? 'Added today' : `Added ${formatDate(todo.createdAt)}`}
           </span>

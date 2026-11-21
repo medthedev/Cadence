@@ -6,19 +6,23 @@ import { Icon } from '../common/Icon'
 import { TodoComposer } from './TodoComposer'
 import { TodoItem } from './TodoItem'
 
-type TodoFilter = 'all' | 'active' | 'done'
+type TodoFilter = 'all' | 'active' | 'done' | 'due'
 
 const FILTERS: Array<{ id: TodoFilter; label: string }> = [
   { id: 'all', label: 'All' },
   { id: 'active', label: 'Active' },
+  { id: 'due', label: 'Due' },
   { id: 'done', label: 'Completed' },
 ]
 
 const PRIORITY_WEIGHT: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
 
-function sortTodos(todos: Todo[]): Todo[] {
+function sortTodos(todos: Todo[], dueFirst = false): Todo[] {
   return [...todos].sort((a, b) => {
     if (a.done !== b.done) return Number(a.done) - Number(b.done)
+    if (dueFirst && a.dueDate !== b.dueDate) {
+      return (a.dueDate ?? '9999-12-31').localeCompare(b.dueDate ?? '9999-12-31')
+    }
     if (a.priority !== b.priority) return PRIORITY_WEIGHT[a.priority] - PRIORITY_WEIGHT[b.priority]
     return b.createdAt.localeCompare(a.createdAt)
   })
@@ -39,9 +43,10 @@ export function TodosView() {
       const matchesFilter = filter === 'all'
         || (filter === 'active' && !todo.done)
         || (filter === 'done' && todo.done)
+        || (filter === 'due' && !todo.done && Boolean(todo.dueDate))
       const matchesQuery = !normalizedQuery || todo.title.toLowerCase().includes(normalizedQuery)
       return matchesFilter && matchesQuery
-    }))
+    }), filter === 'due')
   }, [data.todos, filter, query])
 
   return (
@@ -112,10 +117,16 @@ export function TodosView() {
         ) : (
           <EmptyState
             icon={query ? 'search' : 'check'}
-            title={query ? 'No matching tasks' : filter === 'done' ? 'Nothing completed yet' : 'Your list is clear'}
+            title={query
+              ? 'No matching tasks'
+              : filter === 'done' ? 'Nothing completed yet'
+                : filter === 'due' ? 'Nothing due yet'
+                  : 'Your list is clear'}
             description={query
               ? 'Try a different search term.'
-              : 'Add a task above and start making progress.'}
+              : filter === 'due'
+                ? 'Add a due date to a task to see it here.'
+                : 'Add a task above and start making progress.'}
           />
         )}
       </section>

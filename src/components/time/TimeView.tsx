@@ -73,6 +73,8 @@ export function TimeView() {
   const focusMinutes = todaySessions
     .filter((session) => session.mode === 'focus')
     .reduce((total, session) => total + session.minutes, 0)
+  const focusGoal = data.dailyFocusGoal
+  const goalPercent = focusGoal > 0 ? Math.min(100, Math.round((focusMinutes / focusGoal) * 100)) : 0
 
   const dayBlocks = data.timeBlocks
     .filter((block) => block.date === today)
@@ -269,6 +271,38 @@ export function TimeView() {
         </section>
 
         <div className="time-side">
+          <div className="card time-goal-card">
+            <div className="card__header">
+              <div>
+                <p className="card__eyebrow">Daily focus goal</p>
+                <h3 className="card__title">{focusMinutes} / {focusGoal} minutes</h3>
+              </div>
+              <label className="mini-field">
+                <span>Goal</span>
+                <input
+                  type="number"
+                  min={5}
+                  max={600}
+                  step={5}
+                  value={focusGoal}
+                  onChange={(event) => dispatch({
+                    type: 'finance/focusGoal',
+                    minutes: Math.min(600, Math.max(5, Number(event.target.value) || 5)),
+                  })}
+                  aria-label="Daily focus goal in minutes"
+                />
+              </label>
+            </div>
+            <div className="budget-track">
+              <div className={`budget-fill ${goalPercent >= 100 ? 'budget-fill--complete' : ''}`} style={{ width: `${goalPercent}%` }} />
+            </div>
+            <p className="budget-caption">
+              {goalPercent >= 100
+                ? 'Goal reached. Well done.'
+                : `${goalPercent}% complete · ${Math.max(0, focusGoal - focusMinutes)} minutes to go`}
+            </p>
+          </div>
+
           <div className="stat-grid stat-grid--time">
             <StatCard icon={<Icon name="timer" size={18} />} label="Focused today" value={focusMinutes} suffix=" min" tone="accent" />
             <StatCard icon={<Icon name="calendar" size={18} />} label="Planned today" value={plannedMinutes} suffix=" min" />

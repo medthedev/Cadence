@@ -17,6 +17,7 @@ export function TodoComposer() {
   const [title, setTitle] = useState('')
   const [priority, setPriority] = useState<Priority>('medium')
   const [estimate, setEstimate] = useState('')
+  const [dueDate, setDueDate] = useState('')
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -33,10 +34,12 @@ export function TodoComposer() {
         priority,
         createdAt: todayKey(),
         estimatedMinutes: Number.isFinite(minutes) && minutes > 0 ? minutes : undefined,
+        dueDate: dueDate || undefined,
       },
     })
     setTitle('')
     setEstimate('')
+    setDueDate('')
   }
 
   return (
@@ -84,6 +87,16 @@ export function TodoComposer() {
             onChange={(event) => setEstimate(event.target.value)}
             placeholder="Est. minutes"
             aria-label="Estimated minutes (optional)"
+          />
+        </label>
+
+        <label className="estimate-field estimate-field--date">
+          <Icon name="calendar" size={14} />
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(event) => setDueDate(event.target.value)}
+            aria-label="Due date (optional)"
           />
         </label>
       </div>
