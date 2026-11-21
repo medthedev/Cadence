@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { HabitsView } from './components/habits/HabitsView'
 import { Header } from './components/layout/Header'
 import { Sidebar } from './components/layout/Sidebar'
 import { TodosView } from './components/todos/TodosView'
@@ -33,7 +34,7 @@ function Workspace() {
         <div className="main__inner">
           <Header view={view} theme={theme} onToggleTheme={toggleTheme} />
           <div className="main__content">
-            <TodosView />
+            {view === 'todos' ? <TodosView /> : <HabitsView />}
           </div>
         </div>
       </main>
