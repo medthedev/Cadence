@@ -1,5 +1,6 @@
 import type {
-  AppData, CalendarEvent, FocusSession, Habit, Priority, TimeBlock, Todo, Transaction,
+  AppData, CalendarEvent, FocusSession, Goal, GoalMilestone, Habit, JournalEntry,
+  LifeList, ListItem, Person, Priority, TimeBlock, Todo, Transaction,
 } from '../types'
 
 export type AppAction =
@@ -25,6 +26,24 @@ export type AppAction =
   | { type: 'event/delete'; id: string }
   | { type: 'transaction/add'; transaction: Transaction }
   | { type: 'transaction/delete'; id: string }
+  | { type: 'goal/add'; goal: Goal }
+  | { type: 'goal/toggleComplete'; id: string }
+  | { type: 'goal/delete'; id: string }
+  | { type: 'goal/milestoneAdd'; goalId: string; milestone: GoalMilestone }
+  | { type: 'goal/milestoneToggle'; goalId: string; milestoneId: string }
+  | { type: 'goal/milestoneDelete'; goalId: string; milestoneId: string }
+  | { type: 'journal/upsert'; entry: JournalEntry }
+  | { type: 'journal/delete'; id: string }
+  | { type: 'person/add'; person: Person }
+  | { type: 'person/update'; id: string; changes: Partial<Pick<Person, 'name' | 'relationship' | 'birthday' | 'nextContact' | 'cadenceDays' | 'notes'>> }
+  | { type: 'person/contact'; id: string; lastContact: string; nextContact?: string }
+  | { type: 'person/delete'; id: string }
+  | { type: 'list/add'; list: LifeList }
+  | { type: 'list/delete'; id: string }
+  | { type: 'list/itemAdd'; listId: string; item: ListItem }
+  | { type: 'list/itemToggle'; listId: string; itemId: string }
+  | { type: 'list/itemDelete'; listId: string; itemId: string }
+  | { type: 'list/clearDone'; listId: string }
   | { type: 'finance/currency'; currency: string }
   | { type: 'finance/budget'; amount: number }
   | { type: 'finance/focusGoal'; minutes: number }
@@ -160,6 +179,124 @@ export function appReducer(state: AppData, action: AppAction): AppData {
 
     case 'transaction/delete':
       return { ...state, transactions: state.transactions.filter((item) => item.id !== action.id) }
+
+    case 'goal/add':
+      return { ...state, goals: [action.goal, ...state.goals] }
+
+    case 'goal/toggleComplete':
+      return {
+        ...state,
+        goals: state.goals.map((goal) => goal.id === action.id
+          ? { ...goal, completedAt: goal.completedAt ? undefined : new Date().toISOString() }
+          : goal),
+      }
+
+    case 'goal/delete':
+      return { ...state, goals: state.goals.filter((goal) => goal.id !== action.id) }
+
+    case 'goal/milestoneAdd':
+      return {
+        ...state,
+        goals: state.goals.map((goal) => goal.id === action.goalId
+          ? { ...goal, milestones: [...goal.milestones, action.milestone] }
+          : goal),
+      }
+
+    case 'goal/milestoneToggle':
+      return {
+        ...state,
+        goals: state.goals.map((goal) => goal.id === action.goalId
+          ? {
+              ...goal,
+              milestones: goal.milestones.map((milestone) => milestone.id === action.milestoneId
+                ? { ...milestone, done: !milestone.done }
+                : milestone),
+            }
+          : goal),
+      }
+
+    case 'goal/milestoneDelete':
+      return {
+        ...state,
+        goals: state.goals.map((goal) => goal.id === action.goalId
+          ? { ...goal, milestones: goal.milestones.filter((milestone) => milestone.id !== action.milestoneId) }
+          : goal),
+      }
+
+    case 'journal/upsert':
+      return {
+        ...state,
+        journal: [action.entry, ...state.journal.filter((entry) => entry.id !== action.entry.id
+          && entry.date !== action.entry.date)],
+      }
+
+    case 'journal/delete':
+      return { ...state, journal: state.journal.filter((entry) => entry.id !== action.id) }
+
+    case 'person/add':
+      return { ...state, people: [...state.people, action.person] }
+
+    case 'person/update':
+      return {
+        ...state,
+        people: state.people.map((person) => person.id === action.id
+          ? { ...person, ...action.changes }
+          : person),
+      }
+
+    case 'person/contact':
+      return {
+        ...state,
+        people: state.people.map((person) => person.id === action.id
+          ? { ...person, lastContact: action.lastContact, nextContact: action.nextContact }
+          : person),
+      }
+
+    case 'person/delete':
+      return { ...state, people: state.people.filter((person) => person.id !== action.id) }
+
+    case 'list/add':
+      return { ...state, lists: [action.list, ...state.lists] }
+
+    case 'list/delete':
+      return { ...state, lists: state.lists.filter((list) => list.id !== action.id) }
+
+    case 'list/itemAdd':
+      return {
+        ...state,
+        lists: state.lists.map((list) => list.id === action.listId
+          ? { ...list, items: [...list.items, action.item] }
+          : list),
+      }
+
+    case 'list/itemToggle':
+      return {
+        ...state,
+        lists: state.lists.map((list) => list.id === action.listId
+          ? {
+              ...list,
+              items: list.items.map((item) => item.id === action.itemId
+                ? { ...item, done: !item.done }
+                : item),
+            }
+          : list),
+      }
+
+    case 'list/itemDelete':
+      return {
+        ...state,
+        lists: state.lists.map((list) => list.id === action.listId
+          ? { ...list, items: list.items.filter((item) => item.id !== action.itemId) }
+          : list),
+      }
+
+    case 'list/clearDone':
+      return {
+        ...state,
+        lists: state.lists.map((list) => list.id === action.listId
+          ? { ...list, items: list.items.filter((item) => !item.done) }
+          : list),
+      }
 
     case 'finance/currency':
       return { ...state, currency: action.currency }
