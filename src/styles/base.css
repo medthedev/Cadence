@@ -42,6 +42,12 @@
   --habit-violet: #8250df;
   --habit-amber: #9a6700;
   --habit-rose: #cf222e;
+
+  --chart-1: #1a7f37;
+  --chart-2: #0969da;
+  --chart-3: #8250df;
+  --chart-4: #9a6700;
+  --chart-5: #cf222e;
 }
 
 /* GitHub Dark */
@@ -74,6 +80,12 @@
   --habit-violet: #bc8cff;
   --habit-amber: #e3b341;
   --habit-rose: #f778ba;
+
+  --chart-1: #3fb950;
+  --chart-2: #58a6ff;
+  --chart-3: #bc8cff;
+  --chart-4: #e3b341;
+  --chart-5: #f778ba;
 }
 
 /* Equicord — Discord-inspired dark with a violet accent */
@@ -107,80 +119,85 @@
   --habit-violet: #9b82ff;
   --habit-amber: #f0b232;
   --habit-rose: #f23f7d;
+
+  --chart-1: #7c5cff;
+  --chart-2: #00a8fc;
+  --chart-3: #9b82ff;
+  --chart-4: #f0b232;
+  --chart-5: #f23f7d;
 }
 
-/* Mono — clean black & white, inspired by medrinnn.dev */
+/* Mono — minimal black & white, inspired by medrinnn.dev */
 :root[data-theme='mono'] {
   color-scheme: dark;
 
-  --bg: #0a0a0a;
-  --surface: #171717;
-  --surface-subtle: #1c1c1c;
-  --surface-hover: #262626;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
+  --bg: #080808;
+  --surface: #111111;
+  --surface-subtle: #161616;
+  --surface-hover: #1d1d1d;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.2);
   --text: #fafafa;
-  --text-muted: #a1a1a1;
+  --text-muted: #9a9a9a;
   --accent: #ffffff;
-  --accent-hover: #e5e5e5;
-  --accent-soft: rgba(255, 255, 255, 0.1);
-  --danger: #fafafa;
-  --danger-soft: rgba(255, 255, 255, 0.12);
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 28px rgba(0, 0, 0, 0.5);
-  --radius: 14px;
+  --accent-hover: #e8e8e8;
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --danger: #d6d6d6;
+  --danger-soft: rgba(255, 255, 255, 0.1);
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 12px 30px rgba(0, 0, 0, 0.4);
+  --radius: 12px;
 
-  --heat-0: rgba(255, 255, 255, 0.08);
-  --heat-1: rgba(255, 255, 255, 0.28);
-  --heat-2: rgba(255, 255, 255, 0.48);
-  --heat-3: rgba(255, 255, 255, 0.72);
+  --heat-0: rgba(255, 255, 255, 0.07);
+  --heat-1: rgba(255, 255, 255, 0.25);
+  --heat-2: rgba(255, 255, 255, 0.45);
+  --heat-3: rgba(255, 255, 255, 0.7);
   --heat-4: #ffffff;
 
   --habit-emerald: #ffffff;
-  --habit-sky: #d9d9d9;
-  --habit-violet: #bfbfbf;
-  --habit-amber: #a6a6a6;
-  --habit-rose: #8c8c8c;
+  --habit-sky: #d4d4d4;
+  --habit-violet: #b8b8b8;
+  --habit-amber: #9a9a9a;
+  --habit-rose: #7a7a7a;
+
+  --chart-1: #ffffff;
+  --chart-2: #c8c8c8;
+  --chart-3: #a0a0a0;
+  --chart-4: #7d7d7d;
+  --chart-5: #5c5c5c;
 }
 
-:root[data-theme='mono'] body {
-  background-image: radial-gradient(58rem 38rem at 50% -14%, rgba(255, 255, 255, 0.035), transparent 65%);
-  background-attachment: fixed;
+/* Flat surfaces and crisp edges instead of glow in the minimal theme. */
+:root[data-theme='mono'] .card,
+:root[data-theme='mono'] .stat-card {
+  box-shadow: none;
 }
 
-:root[data-theme='mono'] .sidebar {
-  background-color: rgba(23, 23, 23, 0.78);
-  backdrop-filter: blur(18px) saturate(160%);
-  -webkit-backdrop-filter: blur(18px) saturate(160%);
+:root[data-theme='mono'] .card:hover,
+:root[data-theme='mono'] .stat-card:hover {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+  transform: none;
 }
 
 :root[data-theme='mono'] .modal-backdrop {
-  background: rgba(0, 0, 0, 0.74);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.78);
 }
 
 /* White buttons need dark labels in this theme. */
 :root[data-theme='mono'] .button--primary,
-:root[data-theme='mono'] .brand__mark {
-  color: #000000;
-}
-
-:root[data-theme='mono'] .brand__mark {
-  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.2);
-}
-
+:root[data-theme='mono'] .brand__mark,
 :root[data-theme='mono'] .todo-item--done .todo-checkbox,
 :root[data-theme='mono'] .habit-check--done {
   color: #000000;
 }
 
 :root[data-theme='mono'] .stat-card--warm .stat-card__icon {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: var(--accent-soft);
+  color: var(--text);
 }
 
 :root[data-theme='mono'] .search-field:focus-within,
 :root[data-theme='mono'] .field__input:focus {
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
 }
 
 *,
